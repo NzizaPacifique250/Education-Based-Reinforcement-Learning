@@ -1,0 +1,28 @@
+[project]
+name = "education-rl-summative"
+version = "0.1.0"
+description = "EduPath-RL: comparing DQN, REINFORCE, PPO, and A2C on a custom adaptive learning-path environment (education mission)."
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "gymnasium>=0.29.1",
+    "stable-baselines3[extra]>=2.3.0",
+    "pybullet>=3.2.6",
+    "numpy<2",
+    "matplotlib>=3.8",
+    "pandas>=2.1",
+    "imageio[ffmpeg]>=2.34",
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

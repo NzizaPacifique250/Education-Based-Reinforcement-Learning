@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# uv / venv
+.venv/
+venv/
+
+# RL artifacts
+logs/**/*.csv
+logs/**/*.json
+logs/**/events.out.tfevents.*
+logs/**/*.log
+models/**/*.zip
+models/**/*.pt
+models/**/*.pth
+*.mp4
+*.gif
+*.avi
+
+# keep dir placeholders
+!**/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# planning / process docs (local only, not for the submission repo)
+PLAN.md
+COMMIT_RULES.md
+Machine_Learning_Techniques_II - Summative_Assignment - Report Template.docx
