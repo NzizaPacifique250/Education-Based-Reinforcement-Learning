@@ -7,7 +7,7 @@ from environment.custom_env import EduPathEnv, ACTION_NAMES, N_CONCEPTS, TARGET_
 register(
     id="EduPath-v0",
     entry_point="environment.custom_env:EduPathEnv",
-    max_episode_steps=200,
+    max_episode_steps=250,
 )
 
 __all__ = ["EduPathEnv", "ACTION_NAMES", "N_CONCEPTS", "TARGET_CONCEPT"]

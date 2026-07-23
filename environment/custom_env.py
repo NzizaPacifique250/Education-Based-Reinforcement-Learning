@@ -53,14 +53,17 @@ ACTION_NAMES = {
 }
 
 # --- Reward weights (tunable shaping constants) ----------------------------------------
-W_MASTERY = 5.0          # reward per unit of total mastery gained
-W_SUCCESS = 0.3          # small bonus for a successful exercise
+# All positive rewards are tied to *new* progress (bounded), so no action can be farmed
+# in a loop for unlimited reward.
+W_MASTERY = 5.0          # reward per unit of total mastery gained (bounded: caps at 1/concept)
 STEP_COST = 0.05         # per-step cost -> encourages efficient sequencing
 MISMATCH_PENALTY = 0.4   # difficulty far from current mastery (boredom / frustration)
 PREREQ_PENALTY = 1.0     # attempting a concept whose prerequisites are unmet
 ADVANCE_FAIL_PENALTY = 0.6   # trying to advance when nothing is unlockable
+CERT_BONUS = 1.0         # one-time bonus the first time a concept passes assessment
 QUIZ_FAIL_PENALTY = 0.5      # quizzing a concept that is not yet mastered
-GOAL_BONUS = 20.0        # terminal success: target concept mastered
+QUIZ_WASTE_PENALTY = 0.2     # re-quizzing an already-certified concept
+GOAL_BONUS = 30.0        # terminal success: target concept mastered
 DROPOUT_PENALTY = 10.0   # terminal failure: student disengaged (attention -> 0)
 
 
@@ -69,7 +72,7 @@ class EduPathEnv(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode: str | None = None, max_steps: int = 200):
+    def __init__(self, render_mode: str | None = None, max_steps: int = 250):
         super().__init__()
         self.render_mode = render_mode
         self.max_steps = max_steps
@@ -88,6 +91,7 @@ class EduPathEnv(gym.Env):
         self.steps: int = 0
         self.streak: float = 0.0
         self._hint_active: bool = False
+        self.certified: set[int] = set()
         self.aptitude: float = 1.0  # hidden per-student learning-rate multiplier
 
         self._renderer = None  # lazily constructed PyBullet renderer
@@ -135,6 +139,7 @@ class EduPathEnv(gym.Env):
         self.steps = 0
         self.streak = 0.0
         self._hint_active = False
+        self.certified: set[int] = set()
         # hidden aptitude in [0.7, 1.3] -> used for generalization tests across student profiles
         self.aptitude = float(self.np_random.uniform(0.7, 1.3))
         if options and "aptitude" in options:
@@ -184,8 +189,9 @@ class EduPathEnv(gym.Env):
         cost = 0.05 + 0.10 * difficulty + (0.08 if not success else 0.0)
         self.attention = float(np.clip(self.attention - cost, 0.0, 1.0))
 
+        # NB: no flat success bonus -- reward comes only from the (bounded) mastery gain
+        # above, so drilling an already-mastered concept yields ~0 and cannot be farmed.
         if success:
-            reward += W_SUCCESS
             self.streak = np.clip(self.streak + 1.0, -3.0, 3.0)
         else:
             self.streak = np.clip(self.streak - 1.0, -3.0, 3.0)
@@ -237,10 +243,14 @@ class EduPathEnv(gym.Env):
             self.attention = float(np.clip(self.attention + 0.35, 0.0, 1.0))
 
         elif action == A_QUIZ:
-            if self.mastery[self.current] >= MASTERY_THRESHOLD:
-                reward += 0.5  # confirmed mastery
+            c = self.current
+            if self.mastery[c] >= MASTERY_THRESHOLD and c not in self.certified:
+                self.certified.add(c)
+                reward += CERT_BONUS               # one-time certification
+            elif self.mastery[c] < MASTERY_THRESHOLD:
+                reward -= QUIZ_FAIL_PENALTY         # quizzing an unmastered concept
             else:
-                reward -= QUIZ_FAIL_PENALTY
+                reward -= QUIZ_WASTE_PENALTY        # re-quizzing an already-certified concept
             self.attention = float(np.clip(self.attention - 0.06, 0.0, 1.0))
 
         # -- terminal conditions --------------------------------------------------------
