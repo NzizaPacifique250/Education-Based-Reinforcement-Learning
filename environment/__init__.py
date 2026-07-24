@@ -1,13 +1,16 @@
-"""EduPath-RL environment package."""
+"""SchoolCheckIn-RL environment package."""
 
 from gymnasium.envs.registration import register
 
-from environment.custom_env import EduPathEnv, ACTION_NAMES, N_CONCEPTS, TARGET_CONCEPT
+from environment.custom_env import (SchoolCheckInEnv, ACTION_NAMES, MAX_STEPS, ROOM_SIZE,
+                                     START_POS, SCANNER_A_POS, SCANNER_B_POS,
+                                     HYGIENE_POS, OFFICE_POS)
 
 register(
-    id="EduPath-v0",
-    entry_point="environment.custom_env:EduPathEnv",
-    max_episode_steps=250,
+    id="SchoolCheckIn-v0",
+    entry_point="environment.custom_env:SchoolCheckInEnv",
+    max_episode_steps=MAX_STEPS,
 )
 
-__all__ = ["EduPathEnv", "ACTION_NAMES", "N_CONCEPTS", "TARGET_CONCEPT"]
+__all__ = ["SchoolCheckInEnv", "ACTION_NAMES", "MAX_STEPS", "ROOM_SIZE", "START_POS",
+           "SCANNER_A_POS", "SCANNER_B_POS", "HYGIENE_POS", "OFFICE_POS"]
