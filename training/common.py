@@ -7,15 +7,15 @@ import csv
 import numpy as np
 import gymnasium as gym
 
-import environment  # noqa: F401  (registers EduPath-v0)
+import environment  # noqa: F401  (registers SchoolCheckIn-v0)
 
-ENV_ID = "EduPath-v0"
+ENV_ID = "SchoolCheckIn-v0"
 LOG_ROOT = "logs"
 MODEL_ROOT = "models"
 
 
 def make_env(seed: int | None = None, render_mode: str | None = None):
-    """Factory for a single EduPath env instance."""
+    """Factory for a single SchoolCheckIn env instance."""
     env = gym.make(ENV_ID, render_mode=render_mode)
     if seed is not None:
         env.reset(seed=seed)
@@ -23,16 +23,17 @@ def make_env(seed: int | None = None, render_mode: str | None = None):
 
 
 def evaluate_policy(predict_fn, n_episodes: int = 30, seed: int = 10_000,
-                    aptitude: float | None = None):
+                    options: dict | None = None):
     """Run a policy (predict_fn: obs -> action) and return summary metrics.
 
     Uses a disjoint seed range from training so results reflect generalization.
+    `options` is forwarded to env.reset (e.g. {"scan_reliability": 0.7}).
     """
     env = gym.make(ENV_ID)
-    returns, lengths, successes = [], [], []
+    returns, lengths = [], []
+    successes, biometric, manual, tardy, stranded = [], [], [], [], []
     for ep in range(n_episodes):
-        opts = {"aptitude": aptitude} if aptitude is not None else None
-        obs, info = env.reset(seed=seed + ep, options=opts)
+        obs, info = env.reset(seed=seed + ep, options=options)
         done, total, steps = False, 0.0, 0
         while not done:
             action = predict_fn(obs)
@@ -42,13 +43,24 @@ def evaluate_policy(predict_fn, n_episodes: int = 30, seed: int = 10_000,
             done = term or trunc
         returns.append(total)
         lengths.append(steps)
-        successes.append(1.0 if info.get("target_mastered") else 0.0)
+        checked_in = bool(info.get("checked_in"))
+        successes.append(1.0 if checked_in else 0.0)
+        biometric.append(1.0 if info.get("checkin_mode") == "biometric" else 0.0)
+        manual.append(1.0 if info.get("checkin_mode") == "manual" else 0.0)
+        tardy.append(1.0 if checked_in and info.get("tardy") else 0.0)
+        stranded.append(1.0 if info.get("stranded") else 0.0)
     env.close()
     return {
         "mean_return": float(np.mean(returns)),
         "std_return": float(np.std(returns)),
         "mean_length": float(np.mean(lengths)),
+        # any check-in, biometric or manual
         "success_rate": float(np.mean(successes)),
+        # how the agent resolved the task -- the intended route vs the safe fallback
+        "biometric_rate": float(np.mean(biometric)),
+        "manual_rate": float(np.mean(manual)),
+        "tardy_rate": float(np.mean(tardy)),
+        "stranded_rate": float(np.mean(stranded)),
     }
 
 
