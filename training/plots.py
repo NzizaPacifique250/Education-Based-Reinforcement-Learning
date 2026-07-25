@@ -5,7 +5,8 @@ Produces (rubric criterion 4):
   2. convergence.png       best reward curve of each algorithm, overlaid + smoothed
   3. dqn_objective.png     DQN training loss (and mean-Q) vs timesteps
   4. pg_entropy.png        policy entropy for REINFORCE / PPO / A2C
-  5. generalization.png    success rate of each best agent across unseen student aptitudes
+  5. generalization.png    check-in rate of each best agent across unseen scanner reliabilities
+  6. checkin_modes.png     biometric vs manual vs no check-in, per algorithm
 """
 
 from __future__ import annotations
@@ -134,34 +135,72 @@ def plot_pg_entropy():
     plt.close(fig)
 
 
-def plot_generalization():
-    """Evaluate each best agent on unseen student aptitudes."""
+def _best_agents():
+    """Yield (algo, name, predict) for the best config of each algorithm."""
     from play import _load
-    from training.common import evaluate_policy
-    aptitudes = [0.7, 0.9, 1.1, 1.3]
-    width = 0.2
-    fig, ax = plt.subplots(figsize=(10, 6))
-    any_data = False
-    for i, algo in enumerate(ALGOS):
+    for algo in ALGOS:
         name = _best_name(algo)
         if not name:
             continue
         try:
-            predict = _load(algo, name)
+            yield algo, name, _load(algo, name)
         except Exception:
             continue
-        rates = [evaluate_policy(lambda o: predict(o), n_episodes=20, aptitude=ap)["success_rate"]
-                 for ap in aptitudes]
-        ax.bar(np.arange(len(aptitudes)) + i * width, rates, width, label=algo.upper())
+
+
+def plot_generalization():
+    """Evaluate each best agent under unseen scanner-reliability conditions.
+
+    The range is deliberately harsher than training (which samples 0.80-1.00 for scanner A
+    and 0.45-0.85 for B) so the bars separate instead of all saturating at 1.0.
+    """
+    from training.common import evaluate_policy
+    reliabilities = [0.3, 0.5, 0.7, 0.9]
+    width = 0.2
+    fig, ax = plt.subplots(figsize=(10, 6))
+    any_data = False
+    for i, (algo, name, predict) in enumerate(_best_agents()):
+        rates = [evaluate_policy(lambda o: predict(o), n_episodes=20,
+                                 options={"scan_reliability": r})["success_rate"]
+                 for r in reliabilities]
+        ax.bar(np.arange(len(reliabilities)) + i * width, rates, width,
+               label=f"{algo.upper()} ({name})")
         any_data = True
     if not any_data:
         plt.close(fig); return
-    ax.set_xticks(np.arange(len(aptitudes)) + 1.5 * width)
-    ax.set_xticklabels([f"aptitude {a}" for a in aptitudes])
-    ax.set_ylabel("success rate"); ax.set_ylim(0, 1)
-    ax.set_title("Generalization across unseen student profiles")
+    ax.set_xticks(np.arange(len(reliabilities)) + 1.5 * width)
+    ax.set_xticklabels([f"scanner reliability {r}" for r in reliabilities])
+    ax.set_ylabel("check-in rate"); ax.set_ylim(0, 1.05)
+    ax.set_title("Generalization across unseen scanner-reliability conditions")
     ax.legend(); ax.grid(alpha=0.3, axis="y")
     fig.tight_layout(); fig.savefig(os.path.join(ASSETS, "generalization.png"), dpi=130)
+    plt.close(fig)
+
+
+def plot_checkin_modes():
+    """How each agent resolves the episode: the intended biometric route, the low-reward
+    office fallback, or neither. This is the risk/reward decision the redesign creates."""
+    from training.common import evaluate_policy
+    labels, bio, man, fail = [], [], [], []
+    for algo, name, predict in _best_agents():
+        m = evaluate_policy(lambda o: predict(o), n_episodes=40)
+        labels.append(f"{algo.upper()}\n({name})")
+        bio.append(m["biometric_rate"])
+        man.append(m["manual_rate"])
+        fail.append(max(0.0, 1.0 - m["biometric_rate"] - m["manual_rate"]))
+    if not labels:
+        return
+    x = np.arange(len(labels))
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.bar(x, bio, 0.55, label="biometric check-in (+20)", color="tab:green")
+    ax.bar(x, man, 0.55, bottom=bio, label="manual office sign-in (+6)", color="tab:orange")
+    ax.bar(x, fail, 0.55, bottom=np.array(bio) + np.array(man),
+           label="no check-in (late / stranded)", color="tab:red")
+    ax.set_xticks(x); ax.set_xticklabels(labels)
+    ax.set_ylabel("share of episodes"); ax.set_ylim(0, 1.05)
+    ax.set_title("Episode outcome by algorithm — did the agent take the risk or the fallback?")
+    ax.legend(); ax.grid(alpha=0.3, axis="y")
+    fig.tight_layout(); fig.savefig(os.path.join(ASSETS, "checkin_modes.png"), dpi=130)
     plt.close(fig)
 
 
@@ -172,6 +211,7 @@ def generate_all():
     plot_dqn_objective()
     plot_pg_entropy()
     plot_generalization()
+    plot_checkin_modes()
     print(f"[plots] figures written to {ASSETS}/")
 
 
