@@ -1,4 +1,4 @@
-"""DQN (value-based) training + a 10-run hyperparameter sweep on EduPath-RL."""
+"""DQN (value-based) training + a 10-run hyperparameter sweep on SchoolCheckIn-RL."""
 
 from __future__ import annotations
 

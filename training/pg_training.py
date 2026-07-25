@@ -1,4 +1,4 @@
-"""Policy-gradient training on EduPath-RL: PPO, A2C (Stable-Baselines3) and a custom
+"""Policy-gradient training on SchoolCheckIn-RL: PPO, A2C (Stable-Baselines3) and a custom
 REINFORCE implementation (SB3 has no REINFORCE), each with a 10-run hyperparameter sweep."""
 
 from __future__ import annotations
@@ -117,8 +117,31 @@ class PolicyNet(nn.Module):
         return self.net(x)
 
 
+class ValueNet(nn.Module):
+    """State-value baseline b(s) ~ V(s), trained by regression on the observed returns."""
+
+    def __init__(self, obs_dim, hidden):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(obs_dim, hidden), nn.Tanh(),
+            nn.Linear(hidden, hidden), nn.Tanh(),
+            nn.Linear(hidden, 1),
+        )
+
+    def forward(self, x):
+        return self.net(x).squeeze(-1)
+
+
 class ReinforceAgent:
-    """Vanilla REINFORCE with optional moving-average baseline and entropy bonus."""
+    """REINFORCE (Monte-Carlo policy gradient), optionally with a learned state-value
+    baseline -- Sutton & Barto section 13.4.
+
+    The baseline matters a great deal here. With plain normalised returns the gradient
+    variance over a 150-step, 9-action episode is high enough that the agent never finds
+    the sanitize-then-scan route at all (0% check-in after 400k steps). Subtracting a
+    learned V(s) leaves the gradient unbiased but far lower-variance, which is what makes
+    the run competitive with the SB3 actor-critics.
+    """
 
     def __init__(self, obs_dim, n_actions, config):
         self.gamma = config["gamma"]
@@ -126,7 +149,9 @@ class ReinforceAgent:
         self.use_baseline = config["baseline"]
         self.policy = PolicyNet(obs_dim, n_actions, config["hidden"])
         self.opt = torch.optim.Adam(self.policy.parameters(), lr=config["learning_rate"])
-        self._baseline = 0.0
+        self.value = ValueNet(obs_dim, config["hidden"]) if self.use_baseline else None
+        self.vopt = (torch.optim.Adam(self.value.parameters(), lr=1e-3)
+                     if self.use_baseline else None)
 
     def act(self, obs, deterministic=False):
         with torch.no_grad():
@@ -139,18 +164,30 @@ class ReinforceAgent:
         obs_t = torch.as_tensor(np.array(obs_batch), dtype=torch.float32)
         act_t = torch.as_tensor(act_batch, dtype=torch.int64)
         ret_t = torch.as_tensor(returns, dtype=torch.float32)
-        ret_t = (ret_t - ret_t.mean()) / (ret_t.std() + 1e-8)  # variance reduction
+
         if self.use_baseline:
-            ret_t = ret_t - ret_t.mean()
+            with torch.no_grad():
+                adv = ret_t - self.value(obs_t)
+        else:
+            adv = ret_t
+        adv = (adv - adv.mean()) / (adv.std() + 1e-8)   # variance reduction
 
         logits = self.policy(obs_t)
         dist = Categorical(logits=logits)
         logp = dist.log_prob(act_t)
-        loss = -(logp * ret_t).mean() - self.ent_coef * dist.entropy().mean()
+        loss = -(logp * adv).mean() - self.ent_coef * dist.entropy().mean()
 
         self.opt.zero_grad()
         loss.backward()
         self.opt.step()
+
+        if self.use_baseline:
+            # regress the baseline onto the same Monte-Carlo returns
+            vloss = torch.nn.functional.mse_loss(self.value(obs_t), ret_t)
+            self.vopt.zero_grad()
+            vloss.backward()
+            self.vopt.step()
+
         return float(loss.item()), float(dist.entropy().mean().item())
 
 
