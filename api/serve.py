@@ -1,6 +1,6 @@
-"""FastAPI service exposing EduPath-RL as a JSON API for a web/mobile frontend.
+"""FastAPI service exposing SchoolCheckIn-RL as a JSON API for a web/mobile frontend.
 
-The environment state is serialized to JSON so a frontend can render the skill-tree and
+The environment state is serialized to JSON so a frontend can render the entrance area and
 drive the agent. Run with:  uv run uvicorn api.serve:app --reload
 
 Endpoints:
@@ -8,23 +8,23 @@ Endpoints:
   POST /session/{sid}/step      -> apply an action, return next state
   POST /session/{sid}/act       -> let the best trained agent choose+apply one action
   GET  /session/{sid}           -> current state
-  GET  /curriculum              -> static prerequisite graph (for rendering)
+  GET  /layout                  -> static scene geometry (for rendering)
 """
 
 from __future__ import annotations
 
 import uuid
-import numpy as np
 import gymnasium as gym
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 import environment  # noqa: F401
-from environment.custom_env import (ACTION_NAMES, PREREQS, N_CONCEPTS, TARGET_CONCEPT,
-                                     MASTERY_THRESHOLD)
+from environment.custom_env import (ACTION_NAMES, ROOM_SIZE, START_POS, SCANNER_A_POS,
+                                     SCANNER_B_POS, HYGIENE_POS, OFFICE_POS, OBSTACLES,
+                                     STATION_RADIUS, MAX_ATTEMPTS, BELL_STEP)
 from training.common import ENV_ID
 
-app = FastAPI(title="EduPath-RL API", version="0.1.0")
+app = FastAPI(title="SchoolCheckIn-RL API", version="0.1.0")
 
 _sessions: dict[str, gym.Env] = {}
 _last_obs: dict[str, np.ndarray] = {}
@@ -36,15 +36,27 @@ class StepRequest(BaseModel):
 
 
 def _state(env: gym.Env, obs, reward=None, terminated=False, truncated=False) -> dict:
-    info = env.unwrapped._get_info()
+    u = env.unwrapped
+    info = u._get_info()
     state = {
-        "mastery": [round(float(m), 3) for m in env.unwrapped.mastery],
-        "attention": round(float(env.unwrapped.attention), 3),
-        "current_concept": int(env.unwrapped.current),
-        "step": int(env.unwrapped.steps),
-        "mean_mastery": round(info["mean_mastery"], 3),
-        "target_mastered": info["target_mastered"],
-        "mastered": info["mastered"],
+        "position": [round(float(v), 3) for v in u.pos],
+        "objective": [round(float(v), 3) for v in info["objective"]],
+        "distance_to_objective": info["distance"],
+        "cleanliness": info["cleanliness"],
+        "attempts_per_scanner": info["attempts_per_scanner"],
+        "locked": info["locked"],
+        "queue": info["queue"],
+        "at_scanner_idx": info["at_scanner_idx"],
+        "at_hygiene": info["at_hygiene"],
+        "at_office": info["at_office"],
+        # null until the student has been close enough to read scanner B's display
+        "scanner_b_broken": info["scanner_b_broken"],
+        "help_eta": info["help_eta"],
+        "tardy": info["tardy"],
+        "checked_in": info["checked_in"],
+        "checkin_mode": info["checkin_mode"],
+        "stranded": info["stranded"],
+        "step": int(u.steps),
         "terminated": bool(terminated),
         "truncated": bool(truncated),
     }
@@ -53,13 +65,18 @@ def _state(env: gym.Env, obs, reward=None, terminated=False, truncated=False) ->
     return state
 
 
-@app.get("/curriculum")
-def curriculum():
+@app.get("/layout")
+def layout():
     return {
-        "n_concepts": N_CONCEPTS,
-        "target": TARGET_CONCEPT,
-        "mastery_threshold": MASTERY_THRESHOLD,
-        "prerequisites": {str(k): v for k, v in PREREQS.items()},
+        "room_size": ROOM_SIZE,
+        "start": START_POS.tolist(),
+        "scanners": [SCANNER_A_POS.tolist(), SCANNER_B_POS.tolist()],
+        "hygiene_station": HYGIENE_POS.tolist(),
+        "office": OFFICE_POS.tolist(),
+        "station_radius": STATION_RADIUS,
+        "obstacles": [{"center": c.tolist(), "half": h.tolist()} for c, h in OBSTACLES],
+        "max_attempts_per_scanner": MAX_ATTEMPTS,
+        "bell_step": BELL_STEP,
         "actions": ACTION_NAMES,
     }
 
@@ -85,8 +102,8 @@ def get_session(sid: str):
 def step(sid: str, req: StepRequest):
     if sid not in _sessions:
         raise HTTPException(404, "unknown session")
-    if not (0 <= req.action < 8):
-        raise HTTPException(400, "action must be in [0, 7]")
+    if req.action not in ACTION_NAMES:
+        raise HTTPException(400, f"action must be in [0, {len(ACTION_NAMES) - 1}]")
     env = _sessions[sid]
     obs, r, term, trunc, _ = env.step(req.action)
     _last_obs[sid] = obs
