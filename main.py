@@ -1,4 +1,4 @@
-"""EduPath-RL entry point.
+"""SchoolCheckIn-RL entry point.
 
 Examples:
     uv run main.py train --algo all          # run every hyperparameter sweep
@@ -25,8 +25,10 @@ def cmd_train(args):
         from training.pg_training import run_a2c_sweep
         run_a2c_sweep(args.timesteps)
     if args.algo in ("reinforce", "all"):
+        # Monte-Carlo policy gradient needs far more samples than the SB3 methods on this
+        # task, so it gets its own (larger) budget rather than the shared one.
         from training.pg_training import run_reinforce_sweep
-        run_reinforce_sweep(min(args.timesteps, 120_000))
+        run_reinforce_sweep(max(args.timesteps, 600_000))
 
 
 def cmd_play(args):
@@ -48,13 +50,16 @@ def cmd_demo(args):
     import time
     import environment  # noqa: F401
     from environment.custom_env import ACTION_NAMES
-    env = gym.make("EduPath-v0", render_mode="human")
+    env = gym.make("SchoolCheckIn-v0", render_mode="human")
     obs, info = env.reset(seed=0)
     done = False
     while not done:
         a = env.action_space.sample()
         obs, r, term, trunc, info = env.step(a)
-        print(f"{ACTION_NAMES[a]:<24} reward {r:+.2f} attention {info['attention']:.2f}")
+        print(f"{ACTION_NAMES[a]:<19} reward {r:+6.2f} goal-dist {info['distance']:5.2f} "
+              f"clean {info['cleanliness']:.2f} "
+              f"fails A{info['attempts_per_scanner'][0]}/B{info['attempts_per_scanner'][1]} "
+              f"queue A{info['queue'][0]}/B{info['queue'][1]}")
         done = term or trunc
         time.sleep(0.2)
     env.close()
@@ -78,12 +83,12 @@ def cmd_plots(args):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="EduPath-RL: RL summative (education mission).")
+    ap = argparse.ArgumentParser(description="SchoolCheckIn-RL: RL summative (education mission).")
     sub = ap.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("train", help="train models / run hyperparameter sweeps")
     p.add_argument("--algo", choices=["dqn", "ppo", "a2c", "reinforce", "all"], default="all")
-    p.add_argument("--timesteps", type=int, default=150_000)
+    p.add_argument("--timesteps", type=int, default=250_000)
     p.set_defaults(func=cmd_train)
 
     p = sub.add_parser("play", help="visualise the best (or a chosen) agent in the GUI")

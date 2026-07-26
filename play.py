@@ -1,4 +1,4 @@
-"""Run a trained EduPath-RL agent in the PyBullet GUI with verbose terminal output.
+"""Run a trained SchoolCheckIn-RL agent in the PyBullet GUI with verbose terminal output.
 
 Usage:
     uv run play.py                      # auto-pick best agent across all sweeps
@@ -67,24 +67,36 @@ def _load(algo: str, model_name: str):
 def play(algo, model_name, episodes=3, deterministic=True, sleep=0.25):
     predict = _load(algo, model_name)
     env = gym.make(ENV_ID, render_mode="human")
-    print(f"\n=== EduPath-RL | agent: {algo}/{model_name} ===\n")
+    print(f"\n=== SchoolCheckIn-RL | agent: {algo}/{model_name} ===\n")
 
     for ep in range(episodes):
         obs, info = env.reset(seed=5000 + ep)
         done, total, step = False, 0.0, 0
-        print(f"--- Episode {ep + 1} (student aptitude hidden) ---")
+        print(f"--- Episode {ep + 1} (start cleanliness {info['cleanliness']:.2f}) ---")
         while not done:
             a = predict(obs, deterministic=deterministic)
             obs, r, term, trunc, info = env.step(a)
             total += r
             step += 1
-            print(f"  step {step:3d} | {ACTION_NAMES[a]:<24} | reward {r:+6.2f} | "
-                  f"concept C{info['current_concept']} | attention {info['attention']:.2f} | "
-                  f"mean_mastery {info['mean_mastery']:.2f}")
+            at = ("scanner A" if info["at_scanner_idx"] == 0 else
+                  "scanner B" if info["at_scanner_idx"] == 1 else
+                  "sanitizer" if info["at_hygiene"] else
+                  "office" if info["at_office"] else "-")
+            lock = "".join(c for c, l in zip("AB", info["locked"]) if l) or "-"
+            print(f"  step {step:3d} | {ACTION_NAMES[a]:<19} | reward {r:+6.2f} | "
+                  f"goal-dist {info['distance']:5.2f} | clean {info['cleanliness']:.2f} | "
+                  f"at {at:<9} | fails A{info['attempts_per_scanner'][0]}"
+                  f"/B{info['attempts_per_scanner'][1]} | locked {lock} | "
+                  f"queue A{info['queue'][0]}/B{info['queue'][1]}")
             done = term or trunc
             time.sleep(sleep)
-        outcome = "MASTERED TARGET" if info.get("target_mastered") else (
-            "DROPOUT" if info["attention"] <= 1e-6 else "TIMEOUT")
+        if info["checked_in"]:
+            outcome = f"CHECKED IN via {info['checkin_mode']}"
+            outcome += " (TARDY)" if info["tardy"] else " (on time)"
+        elif info["stranded"]:
+            outcome = "STRANDED (all routes exhausted)"
+        else:
+            outcome = "LATE (never checked in)"
         print(f"  => episode return {total:+.2f} in {step} steps | outcome: {outcome}\n")
     env.close()
 
