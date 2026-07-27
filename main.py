@@ -25,10 +25,10 @@ def cmd_train(args):
         from training.pg_training import run_a2c_sweep
         run_a2c_sweep(args.timesteps)
     if args.algo in ("reinforce", "all"):
-        # Monte-Carlo policy gradient needs far more samples than the SB3 methods on this
-        # task, so it gets its own (larger) budget rather than the shared one.
+        # Monte-Carlo policy gradient needs far more samples than the SB3 methods here:
+        # measured 0% check-in at 400k, 100% at 900k, against PPO's 250k.
         from training.pg_training import run_reinforce_sweep
-        run_reinforce_sweep(max(args.timesteps, 600_000))
+        run_reinforce_sweep(max(args.timesteps, 900_000))
 
 
 def cmd_play(args):
