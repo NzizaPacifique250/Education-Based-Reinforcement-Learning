@@ -1,7 +1,7 @@
 [project]
-name = "education-rl-summative"
-version = "0.1.0"
-description = "EduPath-RL: comparing DQN, REINFORCE, PPO, and A2C on a custom adaptive learning-path environment (education mission)."
+name = "schoolcheckin-rl-summative"
+version = "0.2.0"
+description = "SchoolCheckIn-RL: comparing DQN, REINFORCE, PPO, and A2C on a custom biometric school check-in environment (education mission)."
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 dependencies = [
