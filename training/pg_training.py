@@ -191,7 +191,7 @@ class ReinforceAgent:
         return float(loss.item()), float(dist.entropy().mean().item())
 
 
-def run_reinforce(config, total_timesteps=120_000, seed=0, save=True, batch_episodes=10):
+def run_reinforce(config, total_timesteps=900_000, seed=0, save=True, batch_episodes=4):
     name = config["name"]
     log_dir = os.path.join(LOG_ROOT, "reinforce", name)
     os.makedirs(log_dir, exist_ok=True)
@@ -265,7 +265,7 @@ def run_a2c_sweep(t=150_000):
     return rows
 
 
-def run_reinforce_sweep(t=120_000):
+def run_reinforce_sweep(t=900_000):
     rows = [run_reinforce(c, total_timesteps=t)[1] for c in REINFORCE_SWEEP]
     write_sweep_csv(os.path.join(LOG_ROOT, "reinforce", "sweep_results.csv"), rows)
     return rows
@@ -288,4 +288,7 @@ if __name__ == "__main__":
         if args.algo in ("a2c", "all"):
             run_a2c_sweep(args.timesteps)
         if args.algo in ("reinforce", "all"):
-            run_reinforce_sweep(min(args.timesteps, 120_000))
+            # Mirrors main.py: REINFORCE needs *more* samples than the SB3 methods, not
+            # fewer. This used to cap the budget at 120k, which silently produced ten runs
+            # that all scored 0% no matter what --timesteps the caller asked for.
+            run_reinforce_sweep(max(args.timesteps, 900_000))
