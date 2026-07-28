@@ -88,12 +88,26 @@ uv run uvicorn api.serve:app --reload
 > kiosk forever, scoring **+40 with a 0% check-in rate**. `tests/test_env.py` pins this shut.
 
 ## Visualization
-PyBullet renders the entrance as an actual school: a classroom block with windows and a
-tiled roof, a fenced courtyard with brick gate pillars, trees, benches and a flagpole, the
-two biometric kiosks (each with a screen, finger pad and turnstile arm), the sanitizer
-stand, the reception booth, and a uniformed pupil whose **scanning hand is tinted by
-cleanliness**. Kiosk pads are colour-coded live — red idle, amber in use, blue queued,
-grey out of order, green admitted.
+
+![Scanning in at the main entrance](assets/checkin_entry.gif)
+
+PyBullet renders the entrance as a real school: a two-storey classroom block with framed
+windows, sills and a parapet roof; a glazed entrance portico with canopy, columns and
+steps; a fenced courtyard with brick gate piers, a paved path, lawn, trees, benches and a
+flagpole; the sanitizer stand, reception booth, hedge planter and queue barriers.
+
+The pupil is articulated — head, hair, uniform, backpack, swinging arms and legs, shoes —
+turns to face the direction of travel, and walks with a gait tied to distance covered. Its
+**scanning hand is tinted by cleanliness**, so the sanitize detour is visible at a glance.
+
+**On a successful fingerprint scan at the main entrance the doors slide open and the pupil
+walks into the school**, then the doors close behind them; at the side gate the turnstile
+arm swings clear instead. Reader lamps are colour-coded live — red idle, amber in use, blue
+queued, grey out of order, green admitted.
+
+| Doors closed, presenting a finger | Admitted — doors open onto the lobby |
+|---|---|
+| ![closed](assets/entrance_closed.png) | ![open](assets/entrance_open.png) |
 
 ## Project structure
 ```
@@ -118,3 +132,6 @@ grey out of order, green admitted.
 | `pg_entropy.png` | policy entropy for REINFORCE / PPO / A2C |
 | `generalization.png` | check-in rate across unseen scanner reliabilities |
 | `checkin_modes.png` | biometric vs manual vs no check-in, per algorithm |
+| `env_screenshot.png` | wide view of the school and courtyard |
+| `entrance_closed.png` / `entrance_open.png` | the doors before and after a successful scan |
+| `checkin_entry.gif` | scan → doors open → pupil walks in |
