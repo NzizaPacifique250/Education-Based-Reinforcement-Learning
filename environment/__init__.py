@@ -9,7 +9,10 @@ from environment.custom_env import (SchoolCheckInEnv, ACTION_NAMES, MAX_STEPS, R
 register(
     id="SchoolCheckIn-v0",
     entry_point="environment.custom_env:SchoolCheckInEnv",
-    max_episode_steps=MAX_STEPS,
+    # No max_episode_steps on purpose: the environment truncates itself at max_steps and
+    # applies the lateness penalty when it does. Adding a TimeLimit wrapper here pinned
+    # every episode to MAX_STEPS, so gym.make(..., max_steps=400) was cut off at 150 while
+    # the observation still reported time remaining out of 400.
 )
 
 __all__ = ["SchoolCheckInEnv", "ACTION_NAMES", "MAX_STEPS", "ROOM_SIZE", "START_POS",
