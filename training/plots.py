@@ -192,8 +192,10 @@ def plot_checkin_modes():
         return
     x = np.arange(len(labels))
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.bar(x, bio, 0.55, label="biometric check-in (+20)", color="tab:green")
-    ax.bar(x, man, 0.55, bottom=bio, label="manual office sign-in (+6)", color="tab:orange")
+    from environment.custom_env import BIOMETRIC_BONUS, MANUAL_BONUS
+    ax.bar(x, bio, 0.55, label=f"biometric check-in (+{BIOMETRIC_BONUS:g})", color="tab:green")
+    ax.bar(x, man, 0.55, bottom=bio,
+           label=f"manual office sign-in (+{MANUAL_BONUS:g})", color="tab:orange")
     ax.bar(x, fail, 0.55, bottom=np.array(bio) + np.array(man),
            label="no check-in (late / stranded)", color="tab:red")
     ax.set_xticks(x); ax.set_xticklabels(labels)
