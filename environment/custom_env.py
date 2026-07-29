@@ -165,6 +165,7 @@ class SchoolCheckInEnv(gym.Env):
         self.help_target = -1
         self.scan_reliability = np.ones(2)
         self.rush = 1.0
+        self.episode_over = True   # must reset() before stepping
         self._renderer = None
 
     # -- geometry helpers ---------------------------------------------------------------
@@ -330,6 +331,7 @@ class SchoolCheckInEnv(gym.Env):
         self.b_broken = bool(self.np_random.random() < 0.25)
         self.b_inspected = False
         self.rush = 1.0
+        self.episode_over = False
 
         if options:
             if "cleanliness" in options:
@@ -363,6 +365,12 @@ class SchoolCheckInEnv(gym.Env):
 
     def step(self, action: int):
         assert self.action_space.contains(action), f"invalid action {action}"
+        if self.episode_over:
+            # Without this the episode keeps running past its terminal state and a repeated
+            # scan re-awards the check-in bonus every time -- measured +123.50 over five
+            # extra scans. Callers must reset() between episodes.
+            raise RuntimeError(
+                "step() called after the episode ended; call reset() first")
         action = int(action)
         self.steps += 1
         reward = -STEP_COST
@@ -468,6 +476,7 @@ class SchoolCheckInEnv(gym.Env):
             truncated = True
             reward -= LATE_PENALTY
 
+        self.episode_over = bool(terminated or truncated)
         info = self._get_info()
         info["action_name"] = ACTION_NAMES[action]
         obs = self._get_obs()
