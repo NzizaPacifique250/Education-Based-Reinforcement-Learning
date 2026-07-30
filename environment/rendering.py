@@ -235,9 +235,12 @@ class PyBulletRenderer:
                               [cx, r - 0.01, _DOOR_H])
             handle = self._cyl(0.025, 0.34, _STONE,
                                [cx - sign * (_DOOR_HALF_W - 0.12), r - 0.06, 1.05])
-            for body, off in ((leaf, 0.0), (glass, 0.0),
-                              (handle, -sign * (_DOOR_HALF_W - 0.12))):
-                self._door_parts.append((body, np.array([cx + off, r, 0.0]), sign))
+            # Each part keeps its own depth and height; a shared base collapsed the glazing
+            # and handle onto the frame plane the moment the doors first moved.
+            for body, dx_off, y, z in ((leaf, 0.0, r + 0.02, _DOOR_H),
+                                       (glass, 0.0, r - 0.01, _DOOR_H),
+                                       (handle, -sign * (_DOOR_HALF_W - 0.12), r - 0.06, 1.05)):
+                self._door_parts.append((body, np.array([cx + dx_off, y, z]), sign))
 
         self._label("lbl_school", "GREENHILL  SCHOOL", [dx - 2.0, r + depth + 0.1, 4.75],
                     colour=(0.20, 0.16, 0.14), size=1.8)
@@ -442,9 +445,8 @@ class PyBulletRenderer:
     def _place_doors(self, openness):
         p = self.p
         for body, base, sign in self._door_parts:
-            pos, _ = p.getBasePositionAndOrientation(body, physicsClientId=self.cid)
             p.resetBasePositionAndOrientation(
-                body, [base[0] + sign * _DOOR_SLIDE * openness, base[1] + 0.02, pos[2]],
+                body, [base[0] + sign * _DOOR_SLIDE * openness, base[1], base[2]],
                 [0, 0, 0, 1], physicsClientId=self.cid)
 
     def _entry_sequence(self, x, y):
