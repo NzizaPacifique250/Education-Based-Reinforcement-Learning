@@ -1,6 +1,7 @@
 """Sanity tests for the SchoolCheckIn-RL environment."""
 
 import numpy as np
+import pytest
 import gymnasium as gym
 from stable_baselines3.common.env_checker import check_env
 
@@ -260,6 +261,43 @@ def test_potential_is_a_pure_state_function():
     assert env._potential() != phi_start
     env.pos, env.cleanliness = start_pos, start_clean   # return to the same state
     assert env._potential() == phi_start
+
+
+def test_stepping_after_the_episode_ends_is_refused():
+    """Regression: a finished episode used to keep paying out.
+
+    Repeating the winning scan re-awarded the check-in bonus every time (+123.50 over five
+    extra scans), and the JSON API drove the env directly, so a client could farm it.
+    """
+    env = SchoolCheckInEnv()
+    env.reset(seed=7, options={"cleanliness": 1.0, "scan_reliability": 1.0, "rush": 0.0})
+    env.pos = SCANNER_A_POS.copy()
+    _, _, term, _, info = env.step(A_SCAN)
+    assert term and info["checked_in"]
+    assert env.episode_over
+    with pytest.raises(RuntimeError):
+        env.step(A_SCAN)
+    env.reset(seed=7)                      # reset clears it again
+    assert not env.episode_over
+    env.step(A_WAIT)
+
+
+def test_max_steps_is_not_overridden_by_a_time_limit_wrapper():
+    """Regression: registering with max_episode_steps pinned every episode to 150.
+
+    gym.make(..., max_steps=400) was truncated at 150 while the observation still reported
+    time remaining out of 400, and the lateness penalty never fired.
+    """
+    env = gym.make("SchoolCheckIn-v0", max_steps=220)
+    env.reset(seed=0)
+    steps, truncated = 0, False
+    while True:
+        _, _, term, truncated, _ = env.step(A_WAIT)
+        steps += 1
+        if term or truncated:
+            break
+    env.close()
+    assert truncated and steps == 220, f"episode ended at {steps}, expected 220"
 
 
 def test_goal_reachable_by_scripted_two_stage_policy():
