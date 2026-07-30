@@ -14,6 +14,7 @@ Endpoints:
 from __future__ import annotations
 
 import uuid
+import numpy as np
 import gymnasium as gym
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -98,13 +99,21 @@ def get_session(sid: str):
     return {"session_id": sid, "state": _state(_sessions[sid], _last_obs[sid])}
 
 
-@app.post("/session/{sid}/step")
-def step(sid: str, req: StepRequest):
+def _require_live(sid: str):
+    """Fetch a session, refusing to drive one whose episode has already finished."""
     if sid not in _sessions:
         raise HTTPException(404, "unknown session")
+    env = _sessions[sid]
+    if env.unwrapped.episode_over:
+        raise HTTPException(409, "episode is over; create a new session")
+    return env
+
+
+@app.post("/session/{sid}/step")
+def step(sid: str, req: StepRequest):
     if req.action not in ACTION_NAMES:
         raise HTTPException(400, f"action must be in [0, {len(ACTION_NAMES) - 1}]")
-    env = _sessions[sid]
+    env = _require_live(sid)
     obs, r, term, trunc, _ = env.step(req.action)
     _last_obs[sid] = obs
     return {"session_id": sid, "action": ACTION_NAMES[req.action],
@@ -115,15 +124,13 @@ def step(sid: str, req: StepRequest):
 def agent_act(sid: str):
     """Let the best trained agent pick and apply an action (JSON-driven inference)."""
     global _predict
-    if sid not in _sessions:
-        raise HTTPException(404, "unknown session")
+    env = _require_live(sid)
     if _predict is None:
         from play import _best_from_sweeps, _load
         found = _best_from_sweeps()
         if found is None:
             raise HTTPException(503, "no trained agent available; run training first")
         _predict = _load(found[0], found[1])
-    env = _sessions[sid]
     action = int(_predict(_last_obs[sid]))
     obs, r, term, trunc, _ = env.step(action)
     _last_obs[sid] = obs
