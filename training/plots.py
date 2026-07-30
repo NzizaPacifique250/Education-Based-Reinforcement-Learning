@@ -67,7 +67,7 @@ def plot_reward_curves():
             continue
         ax.plot(r, alpha=0.25, color="tab:blue")
         ax.plot(np.arange(len(_smooth(r))) + 10, _smooth(r), color="tab:blue", lw=2)
-        ax.set_title(f"{algo.upper()} — best config: {name}")
+        ax.set_title(f"{algo.upper()}: best config {name}")
         ax.set_xlabel("episode"); ax.set_ylabel("episode return"); ax.grid(alpha=0.3)
     fig.suptitle("Episode reward per algorithm (best hyperparameter configuration)")
     fig.tight_layout()
@@ -102,7 +102,7 @@ def plot_dqn_objective():
     if "train/loss" in df:
         ax1.plot(x, df["train/loss"], color="tab:red", label="TD loss")
         ax1.set_ylabel("TD loss", color="tab:red")
-    ax1.set_xlabel("timesteps"); ax1.set_title(f"DQN objective — {name}"); ax1.grid(alpha=0.3)
+    ax1.set_xlabel("timesteps"); ax1.set_title(f"DQN objective, config {name}"); ax1.grid(alpha=0.3)
     if "rollout/ep_rew_mean" in df:
         ax2 = ax1.twinx()
         ax2.plot(x, df["rollout/ep_rew_mean"], color="tab:blue", label="mean ep reward")
@@ -132,6 +132,75 @@ def plot_pg_entropy():
     ax.set_title("Policy entropy (exploration) over training")
     ax.legend(); ax.grid(alpha=0.3)
     fig.tight_layout(); fig.savefig(os.path.join(ASSETS, "pg_entropy.png"), dpi=130)
+    plt.close(fig)
+
+
+def convergence_stats(window: int = 100, frac: float = 0.90, hold: int = 250):
+    """Episodes each method needed to reach stable performance.
+
+    Plateau is the mean return over the final 10% of episodes. Convergence is the first
+    episode whose `window`-episode moving average reaches `frac` of that plateau and then
+    holds it for `hold` consecutive episodes. Requiring it to hold for the entire remainder
+    instead is far too strict on a noisy run: A2C and REINFORCE only satisfy that in the
+    last few hundred episodes, which says nothing about when they actually learned.
+    """
+    stats = {}
+    for algo in ALGOS:
+        name = _best_name(algo)
+        r = _episode_returns(algo, name) if name else None
+        if r is None or len(r) < window:
+            continue
+        ma = np.convolve(r, np.ones(window) / window, mode="valid")
+        plateau = float(np.mean(r[-max(len(r) // 10, window):]))
+        target = frac * plateau
+        above = ma >= target
+        ep, first = None, None
+        for i in range(len(above)):
+            if not above[i]:
+                continue
+            if first is None:
+                first = i + window
+            if above[i:i + hold].all():
+                ep = i + window          # episode index in the original series
+                break
+        stats[algo] = {
+            "name": name, "episodes": len(r), "plateau": plateau, "first_reached": first,
+            "converged_at": ep, "moving_avg": ma, "target": target,
+        }
+    return stats
+
+
+def plot_episodes_to_converge():
+    """Subplots: moving-average curves with the convergence point marked, plus a bar chart
+    of how many episodes each method needed to get there."""
+    stats = convergence_stats()
+    if not stats:
+        return
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.2))
+    colours = {"dqn": "tab:blue", "ppo": "tab:green", "a2c": "tab:orange",
+               "reinforce": "tab:purple"}
+    for algo, s in stats.items():
+        c = colours.get(algo, "grey")
+        ax1.plot(np.arange(len(s["moving_avg"])) + 100, s["moving_avg"], color=c, lw=1.8,
+                 label=f"{algo.upper()} ({s['name']})")
+        if s["converged_at"]:
+            ax1.axvline(s["converged_at"], color=c, ls=":", alpha=0.7)
+            ax1.plot(s["converged_at"], s["target"], "o", color=c, ms=7)
+    ax1.set_xlabel("episode"); ax1.set_ylabel("100-episode moving average return")
+    ax1.set_title("Learning curves with convergence point marked")
+    ax1.legend(fontsize=9); ax1.grid(alpha=0.3)
+
+    names = [a.upper() for a in stats]
+    eps = [stats[a]["converged_at"] or 0 for a in stats]
+    bars = ax2.bar(names, eps, 0.55, color=[colours.get(a, "grey") for a in stats])
+    for b, e in zip(bars, eps):
+        ax2.text(b.get_x() + b.get_width() / 2, e, f" {e}", ha="center", va="bottom",
+                 fontsize=10)
+    ax2.set_ylabel("episodes to reach 90% of final performance")
+    ax2.set_title("Episodes required to converge")
+    ax2.grid(alpha=0.3, axis="y")
+    fig.tight_layout()
+    fig.savefig(os.path.join(ASSETS, "episodes_to_converge.png"), dpi=130)
     plt.close(fig)
 
 
@@ -200,7 +269,7 @@ def plot_checkin_modes():
            label="no check-in (late / stranded)", color="tab:red")
     ax.set_xticks(x); ax.set_xticklabels(labels)
     ax.set_ylabel("share of episodes"); ax.set_ylim(0, 1.05)
-    ax.set_title("Episode outcome by algorithm — did the agent take the risk or the fallback?")
+    ax.set_title("Episode outcome by algorithm: intended route vs fallback")
     ax.legend(); ax.grid(alpha=0.3, axis="y")
     fig.tight_layout(); fig.savefig(os.path.join(ASSETS, "checkin_modes.png"), dpi=130)
     plt.close(fig)
@@ -212,6 +281,7 @@ def generate_all():
     plot_convergence()
     plot_dqn_objective()
     plot_pg_entropy()
+    plot_episodes_to_converge()
     plot_generalization()
     plot_checkin_modes()
     print(f"[plots] figures written to {ASSETS}/")

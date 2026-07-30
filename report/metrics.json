@@ -1,0 +1,112 @@
+{
+ "gen": {
+  "dqn": {
+   "name": "dqn07",
+   "rates": [
+    0.55,
+    0.7,
+    0.9,
+    1.0
+   ]
+  },
+  "ppo": {
+   "name": "ppo10",
+   "rates": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "a2c": {
+   "name": "a2c06",
+   "rates": [
+    0.6,
+    0.9,
+    0.95,
+    0.95
+   ]
+  },
+  "reinforce": {
+   "name": "reinforce10",
+   "rates": [
+    0.8,
+    0.95,
+    1.0,
+    1.0
+   ]
+  }
+ },
+ "modes": {
+  "dqn": {
+   "mean_return": 35.004,
+   "std_return": 10.465,
+   "mean_length": 43.175,
+   "success_rate": 0.975,
+   "biometric_rate": 0.975,
+   "manual_rate": 0.0,
+   "tardy_rate": 0.025,
+   "stranded_rate": 0.0
+  },
+  "ppo": {
+   "mean_return": 36.694,
+   "std_return": 2.517,
+   "mean_length": 40.3,
+   "success_rate": 1.0,
+   "biometric_rate": 1.0,
+   "manual_rate": 0.0,
+   "tardy_rate": 0.0,
+   "stranded_rate": 0.0
+  },
+  "a2c": {
+   "mean_return": 28.313,
+   "std_return": 17.378,
+   "mean_length": 59.325,
+   "success_rate": 0.825,
+   "biometric_rate": 0.825,
+   "manual_rate": 0.0,
+   "tardy_rate": 0.0,
+   "stranded_rate": 0.05
+  },
+  "reinforce": {
+   "mean_return": 36.453,
+   "std_return": 3.277,
+   "mean_length": 38.825,
+   "success_rate": 1.0,
+   "biometric_rate": 1.0,
+   "manual_rate": 0.0,
+   "tardy_rate": 0.025,
+   "stranded_rate": 0.0
+  }
+ },
+ "conv": {
+  "dqn": {
+   "name": "dqn07",
+   "episodes": 3590,
+   "plateau": 34.79,
+   "first": 1169,
+   "stable": 1338
+  },
+  "ppo": {
+   "name": "ppo10",
+   "episodes": 4242,
+   "plateau": 34.33,
+   "first": 809,
+   "stable": 985
+  },
+  "a2c": {
+   "name": "a2c06",
+   "episodes": 3555,
+   "plateau": 27.78,
+   "first": 597,
+   "stable": 1154
+  },
+  "reinforce": {
+   "name": "reinforce10",
+   "episodes": 10288,
+   "plateau": 27.71,
+   "first": 3286,
+   "stable": 5131
+  }
+ }
+}
