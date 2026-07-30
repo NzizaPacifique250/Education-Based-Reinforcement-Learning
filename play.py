@@ -46,10 +46,16 @@ def _load(algo: str, model_name: str):
         env.close()
         net.eval()
 
+        from torch.distributions import Categorical
+
         def predict(obs, deterministic=True):
             with torch.no_grad():
                 logits = net(torch.as_tensor(obs, dtype=torch.float32))
-                return int(torch.argmax(logits).item())
+                if deterministic:
+                    return int(torch.argmax(logits).item())
+                # honour --stochastic: this branch used to fall through to argmax, so the
+                # flag did nothing for REINFORCE models
+                return int(Categorical(logits=logits).sample().item())
         return predict
 
     # SB3 models
