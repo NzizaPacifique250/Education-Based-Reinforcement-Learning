@@ -223,7 +223,7 @@ CSS = """
 @page { size: A4; margin: 11mm 11mm; }
 * { box-sizing: border-box; }
 body { font-family: "Segoe UI", Calibri, Arial, sans-serif; font-size: 9.1pt;
-       line-height: 1.30; color: #1a1a1a; margin: 0; }
+       line-height: 1.34; color: #1a1a1a; margin: 0; }
 h1 { font-size: 16pt; margin: 0 0 1.5mm; color: #12305c; }
 h2 { font-size: 12pt; margin: 4mm 0 1.5mm; color: #12305c;
      border-bottom: 1.6pt solid #12305c; padding-bottom: 1mm; }
@@ -248,11 +248,11 @@ table.obs { font-size: 7.1pt; }
 figure { margin: 1.5mm 0 2mm; text-align: center; page-break-inside: avoid; }
 figure img { max-width: 100%; height: auto; border: 0.5pt solid #ccd3dd; border-radius: 2pt; }
 figcaption { font-size: 8.3pt; color: #444; margin-top: 1mm; font-style: italic; }
-.wide img { max-height: 61mm; }
-.tall img { max-height: 69mm; }
+.wide img { max-height: 72mm; }
+.tall img { max-height: 82mm; }
 .pair { display: flex; gap: 3mm; page-break-inside: avoid; }
 .pair figure { flex: 1; margin: 2mm 0; }
-.pair img { max-height: 40mm; }
+.pair img { max-height: 46mm; }
 .formula { background: #f7f9fc; border: 0.4pt solid #ccd3dd; padding: 1.5mm 2.5mm;
            margin: 1.5mm 0 2mm; font-family: Consolas, monospace; font-size: 8.0pt;
            line-height: 1.35; white-space: pre-wrap; }
