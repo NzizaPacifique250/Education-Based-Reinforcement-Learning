@@ -1,0 +1,2831 @@
+{
+  "schema_version": "1.0.0",
+  "env_id": "SchoolCheckIn-v0",
+  "seed": 5000,
+  "policy": {
+    "kind": "scripted_reference",
+    "note": "no trained model was available, so a hand written controller was recorded; re-run this exporter after training to replace it"
+  },
+  "summary": {
+    "steps": 35,
+    "return": 39.44,
+    "checked_in": true,
+    "checkin_mode": "biometric",
+    "tardy": false,
+    "stranded": false,
+    "rejections_per_reader": [
+      1,
+      0
+    ],
+    "final_cleanliness": 0.676
+  },
+  "frames": [
+    {
+      "t": 0,
+      "action_id": null,
+      "action": null,
+      "reward": 0.0,
+      "cumulative_reward": 0.0,
+      "state": {
+        "position": [
+          1.0,
+          1.0
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 7.018,
+        "cleanliness": 0.175,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 0,
+        "steps_left": 150,
+        "steps_to_bell": 80,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          -0.8,
+          0.8,
+          0.8,
+          0.8,
+          0.8,
+          0.1,
+          0.5701,
+          0.05,
+          0.7,
+          0.4962,
+          0.4,
+          0.0,
+          0.2828,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1749,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "t": 1,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.561,
+      "cumulative_reward": 0.561,
+      "state": {
+        "position": [
+          1.0,
+          1.5
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 6.519,
+        "cleanliness": 0.163,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          1,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 1,
+        "steps_left": 149,
+        "steps_to_bell": 79,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          -0.7,
+          0.8,
+          0.75,
+          0.7754,
+          0.8,
+          0.05,
+          0.5668,
+          0.05,
+          0.65,
+          0.461,
+          0.4,
+          -0.05,
+          0.285,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1629,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.0,
+          0.9933,
+          0.9875,
+          0.0
+        ],
+        "reward": 0.561
+      }
+    },
+    {
+      "t": 2,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.565,
+      "cumulative_reward": 1.126,
+      "state": {
+        "position": [
+          1.0,
+          2.0
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 6.021,
+        "cleanliness": 0.151,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          2
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 2,
+        "steps_left": 148,
+        "steps_to_bell": 78,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          -0.6,
+          0.8,
+          0.7,
+          0.7517,
+          0.8,
+          0.0,
+          0.5657,
+          0.05,
+          0.6,
+          0.4257,
+          0.4,
+          -0.1,
+          0.2915,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1509,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6667,
+          0.9867,
+          0.975,
+          0.0
+        ],
+        "reward": 0.565
+      }
+    },
+    {
+      "t": 3,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.569,
+      "cumulative_reward": 1.695,
+      "state": {
+        "position": [
+          1.0,
+          2.5
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 5.523,
+        "cleanliness": 0.139,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          3,
+          1
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 3,
+        "steps_left": 147,
+        "steps_to_bell": 77,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          -0.5,
+          0.8,
+          0.65,
+          0.7289,
+          0.8,
+          -0.05,
+          0.5668,
+          0.05,
+          0.55,
+          0.3905,
+          0.4,
+          -0.15,
+          0.3021,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1389,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.3333,
+          0.98,
+          0.9625,
+          0.0
+        ],
+        "reward": 0.569
+      }
+    },
+    {
+      "t": 4,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.573,
+      "cumulative_reward": 2.268,
+      "state": {
+        "position": [
+          1.0,
+          3.0
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 5.025,
+        "cleanliness": 0.127,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          2,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 4,
+        "steps_left": 146,
+        "steps_to_bell": 76,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          -0.4,
+          0.8,
+          0.6,
+          0.7071,
+          0.8,
+          -0.1,
+          0.5701,
+          0.05,
+          0.5,
+          0.3553,
+          0.4,
+          -0.2,
+          0.3162,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1269,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6667,
+          0.0,
+          0.9733,
+          0.95,
+          0.0
+        ],
+        "reward": 0.573
+      }
+    },
+    {
+      "t": 5,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.579,
+      "cumulative_reward": 2.847,
+      "state": {
+        "position": [
+          1.0,
+          3.5
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 4.528,
+        "cleanliness": 0.115,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          1,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 5,
+        "steps_left": 145,
+        "steps_to_bell": 75,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          -0.3,
+          0.8,
+          0.55,
+          0.6865,
+          0.8,
+          -0.15,
+          0.5755,
+          0.05,
+          0.45,
+          0.3202,
+          0.4,
+          -0.25,
+          0.3335,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1149,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.0,
+          0.9667,
+          0.9375,
+          0.0
+        ],
+        "reward": 0.579
+      }
+    },
+    {
+      "t": 6,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.584,
+      "cumulative_reward": 3.431,
+      "state": {
+        "position": [
+          1.0,
+          4.0
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 4.031,
+        "cleanliness": 0.103,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          3
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 6,
+        "steps_left": 144,
+        "steps_to_bell": 74,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          -0.2,
+          0.8,
+          0.5,
+          0.6671,
+          0.8,
+          -0.2,
+          0.5831,
+          0.05,
+          0.4,
+          0.285,
+          0.4,
+          -0.3,
+          0.3536,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1029,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.96,
+          0.925,
+          0.0
+        ],
+        "reward": 0.584
+      }
+    },
+    {
+      "t": 7,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.591,
+      "cumulative_reward": 4.022,
+      "state": {
+        "position": [
+          1.0,
+          4.5
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 3.536,
+        "cleanliness": 0.091,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          2
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 7,
+        "steps_left": 143,
+        "steps_to_bell": 73,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          -0.1,
+          0.8,
+          0.45,
+          0.649,
+          0.8,
+          -0.25,
+          0.5927,
+          0.05,
+          0.35,
+          0.25,
+          0.4,
+          -0.35,
+          0.3758,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0909,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6667,
+          0.9533,
+          0.9125,
+          0.0
+        ],
+        "reward": 0.591
+      }
+    },
+    {
+      "t": 8,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.598,
+      "cumulative_reward": 4.62,
+      "state": {
+        "position": [
+          1.0,
+          5.0
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 3.041,
+        "cleanliness": 0.079,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          1
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 8,
+        "steps_left": 142,
+        "steps_to_bell": 72,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.0,
+          0.8,
+          0.4,
+          0.6325,
+          0.8,
+          -0.3,
+          0.6042,
+          0.05,
+          0.3,
+          0.2151,
+          0.4,
+          -0.4,
+          0.4,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0789,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.9467,
+          0.9,
+          0.0
+        ],
+        "reward": 0.598
+      }
+    },
+    {
+      "t": 9,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.605,
+      "cumulative_reward": 5.225,
+      "state": {
+        "position": [
+          1.0,
+          5.5
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 2.55,
+        "cleanliness": 0.067,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 9,
+        "steps_left": 141,
+        "steps_to_bell": 71,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.1,
+          0.8,
+          0.35,
+          0.6175,
+          0.8,
+          -0.35,
+          0.6175,
+          0.05,
+          0.25,
+          0.1803,
+          0.4,
+          -0.45,
+          0.4257,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0669,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.94,
+          0.8875,
+          0.0
+        ],
+        "reward": 0.605
+      }
+    },
+    {
+      "t": 10,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.611,
+      "cumulative_reward": 5.836,
+      "state": {
+        "position": [
+          1.0,
+          6.0
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 2.062,
+        "cleanliness": 0.055,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 10,
+        "steps_left": 140,
+        "steps_to_bell": 70,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.2,
+          0.8,
+          0.3,
+          0.6042,
+          0.8,
+          -0.4,
+          0.6325,
+          0.05,
+          0.2,
+          0.1458,
+          0.4,
+          -0.5,
+          0.4528,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0549,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9333,
+          0.875,
+          0.0
+        ],
+        "reward": 0.611
+      }
+    },
+    {
+      "t": 11,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.614,
+      "cumulative_reward": 6.45,
+      "state": {
+        "position": [
+          1.0,
+          6.5
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 1.581,
+        "cleanliness": 0.043,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 11,
+        "steps_left": 139,
+        "steps_to_bell": 69,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.3,
+          0.8,
+          0.25,
+          0.5927,
+          0.8,
+          -0.45,
+          0.649,
+          0.05,
+          0.15,
+          0.1118,
+          0.4,
+          -0.55,
+          0.4809,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0429,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9267,
+          0.8625,
+          0.0
+        ],
+        "reward": 0.614
+      }
+    },
+    {
+      "t": 12,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.603,
+      "cumulative_reward": 7.053,
+      "state": {
+        "position": [
+          1.0,
+          7.0
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 1.118,
+        "cleanliness": 0.031,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          1,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 12,
+        "steps_left": 138,
+        "steps_to_bell": 68,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.4,
+          0.8,
+          0.2,
+          0.5831,
+          0.8,
+          -0.5,
+          0.6671,
+          0.05,
+          0.1,
+          0.0791,
+          0.4,
+          -0.6,
+          0.5099,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0309,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.0,
+          0.92,
+          0.85,
+          0.0
+        ],
+        "reward": 0.603
+      }
+    },
+    {
+      "t": 13,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.543,
+      "cumulative_reward": 7.596,
+      "state": {
+        "position": [
+          1.0,
+          7.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 8.139,
+        "cleanliness": 0.019,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": true,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 13,
+        "steps_left": 137,
+        "steps_to_bell": 67,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.5,
+          0.8,
+          0.15,
+          0.5755,
+          0.8,
+          -0.55,
+          0.6865,
+          0.05,
+          0.05,
+          0.05,
+          0.4,
+          -0.65,
+          0.5397,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0189,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9133,
+          0.8375,
+          0.0
+        ],
+        "reward": 0.543
+      }
+    },
+    {
+      "t": 14,
+      "action_id": 4,
+      "action": "sanitize_hands",
+      "reward": 0.079,
+      "cumulative_reward": 7.675,
+      "state": {
+        "position": [
+          1.0,
+          7.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 8.139,
+        "cleanliness": 0.469,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": true,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 14,
+        "steps_left": 136,
+        "steps_to_bell": 66,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.5,
+          0.8,
+          0.15,
+          0.5755,
+          0.8,
+          -0.55,
+          0.6865,
+          0.05,
+          0.05,
+          0.05,
+          0.4,
+          -0.65,
+          0.5397,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.4689,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9067,
+          0.825,
+          0.0
+        ],
+        "reward": 0.079
+      }
+    },
+    {
+      "t": 15,
+      "action_id": 4,
+      "action": "sanitize_hands",
+      "reward": 0.016,
+      "cumulative_reward": 7.691,
+      "state": {
+        "position": [
+          1.0,
+          7.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 8.139,
+        "cleanliness": 0.919,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": true,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 15,
+        "steps_left": 135,
+        "steps_to_bell": 65,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.5,
+          0.8,
+          0.15,
+          0.5755,
+          0.8,
+          -0.55,
+          0.6865,
+          0.05,
+          0.05,
+          0.05,
+          0.4,
+          -0.65,
+          0.5397,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.9189,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.8125,
+          0.0
+        ],
+        "reward": 0.016
+      }
+    },
+    {
+      "t": 16,
+      "action_id": 4,
+      "action": "sanitize_hands",
+      "reward": -0.05,
+      "cumulative_reward": 7.641,
+      "state": {
+        "position": [
+          1.0,
+          7.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 8.139,
+        "cleanliness": 1.0,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": true,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 16,
+        "steps_left": 134,
+        "steps_to_bell": 64,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.5,
+          0.8,
+          0.15,
+          0.5755,
+          0.8,
+          -0.55,
+          0.6865,
+          0.05,
+          0.05,
+          0.05,
+          0.4,
+          -0.65,
+          0.5397,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.8933,
+          0.8,
+          0.0
+        ],
+        "reward": -0.05
+      }
+    },
+    {
+      "t": 17,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.066,
+      "cumulative_reward": 7.707,
+      "state": {
+        "position": [
+          1.0,
+          8.0
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 8.062,
+        "cleanliness": 0.988,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          2,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": true,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 17,
+        "steps_left": 133,
+        "steps_to_bell": 63,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.6,
+          0.8,
+          0.1,
+          0.5701,
+          0.8,
+          -0.6,
+          0.7071,
+          0.05,
+          0.0,
+          0.0354,
+          0.4,
+          -0.7,
+          0.5701,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.988,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6667,
+          0.0,
+          0.8867,
+          0.7875,
+          0.0
+        ],
+        "reward": 0.066
+      }
+    },
+    {
+      "t": 18,
+      "action_id": 0,
+      "action": "move_north",
+      "reward": 0.02,
+      "cumulative_reward": 7.727,
+      "state": {
+        "position": [
+          1.0,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 8.016,
+        "cleanliness": 0.976,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          1,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": true,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 18,
+        "steps_left": 132,
+        "steps_to_bell": 62,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.8,
+          0.7,
+          0.8,
+          0.05,
+          0.5668,
+          0.8,
+          -0.65,
+          0.7289,
+          0.05,
+          -0.05,
+          0.05,
+          0.4,
+          -0.75,
+          0.601,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.976,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.0,
+          0.88,
+          0.775,
+          0.0
+        ],
+        "reward": 0.02
+      }
+    },
+    {
+      "t": 19,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.698,
+      "cumulative_reward": 8.426,
+      "state": {
+        "position": [
+          1.5,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 7.517,
+        "cleanliness": 0.964,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          3
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": true,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 19,
+        "steps_left": 131,
+        "steps_to_bell": 61,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.7,
+          0.7,
+          0.75,
+          0.05,
+          0.5315,
+          0.75,
+          -0.65,
+          0.7018,
+          0.0,
+          -0.05,
+          0.0354,
+          0.35,
+          -0.75,
+          0.5852,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.964,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.8733,
+          0.7625,
+          0.0
+        ],
+        "reward": 0.698
+      }
+    },
+    {
+      "t": 20,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.698,
+      "cumulative_reward": 9.124,
+      "state": {
+        "position": [
+          2.0,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 7.018,
+        "cleanliness": 0.952,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          2
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": true,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 20,
+        "steps_left": 130,
+        "steps_to_bell": 60,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.6,
+          0.7,
+          0.7,
+          0.05,
+          0.4962,
+          0.7,
+          -0.65,
+          0.6755,
+          -0.05,
+          -0.05,
+          0.05,
+          0.3,
+          -0.75,
+          0.5712,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.952,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6667,
+          0.8667,
+          0.75,
+          0.0
+        ],
+        "reward": 0.698
+      }
+    },
+    {
+      "t": 21,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.698,
+      "cumulative_reward": 9.822,
+      "state": {
+        "position": [
+          2.5,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 6.519,
+        "cleanliness": 0.94,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          1
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 21,
+        "steps_left": 129,
+        "steps_to_bell": 59,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.5,
+          0.7,
+          0.65,
+          0.05,
+          0.461,
+          0.65,
+          -0.65,
+          0.65,
+          -0.1,
+          -0.05,
+          0.0791,
+          0.25,
+          -0.75,
+          0.559,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.94,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.86,
+          0.7375,
+          0.0
+        ],
+        "reward": 0.698
+      }
+    },
+    {
+      "t": 22,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.698,
+      "cumulative_reward": 10.519,
+      "state": {
+        "position": [
+          3.0,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 6.021,
+        "cleanliness": 0.928,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          2,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 22,
+        "steps_left": 128,
+        "steps_to_bell": 58,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.4,
+          0.7,
+          0.6,
+          0.05,
+          0.4257,
+          0.6,
+          -0.65,
+          0.6255,
+          -0.15,
+          -0.05,
+          0.1118,
+          0.2,
+          -0.75,
+          0.5489,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.928,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6667,
+          0.0,
+          0.8533,
+          0.725,
+          0.0
+        ],
+        "reward": 0.698
+      }
+    },
+    {
+      "t": 23,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.697,
+      "cumulative_reward": 11.217,
+      "state": {
+        "position": [
+          3.5,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 5.523,
+        "cleanliness": 0.916,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          1,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 23,
+        "steps_left": 127,
+        "steps_to_bell": 57,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.3,
+          0.7,
+          0.55,
+          0.05,
+          0.3905,
+          0.55,
+          -0.65,
+          0.6021,
+          -0.2,
+          -0.05,
+          0.1458,
+          0.15,
+          -0.75,
+          0.5408,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.916,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.0,
+          0.8467,
+          0.7125,
+          0.0
+        ],
+        "reward": 0.697
+      }
+    },
+    {
+      "t": 24,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.697,
+      "cumulative_reward": 11.913,
+      "state": {
+        "position": [
+          4.0,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 5.025,
+        "cleanliness": 0.904,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          1
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 24,
+        "steps_left": 126,
+        "steps_to_bell": 56,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.2,
+          0.7,
+          0.5,
+          0.05,
+          0.3553,
+          0.5,
+          -0.65,
+          0.5799,
+          -0.25,
+          -0.05,
+          0.1803,
+          0.1,
+          -0.75,
+          0.535,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.904,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.84,
+          0.7,
+          0.0
+        ],
+        "reward": 0.697
+      }
+    },
+    {
+      "t": 25,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.696,
+      "cumulative_reward": 12.609,
+      "state": {
+        "position": [
+          4.5,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 4.528,
+        "cleanliness": 0.892,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 25,
+        "steps_left": 125,
+        "steps_to_bell": 55,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          -0.1,
+          0.7,
+          0.45,
+          0.05,
+          0.3202,
+          0.45,
+          -0.65,
+          0.559,
+          -0.3,
+          -0.05,
+          0.2151,
+          0.05,
+          -0.75,
+          0.5315,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.892,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.8333,
+          0.6875,
+          0.0
+        ],
+        "reward": 0.696
+      }
+    },
+    {
+      "t": 26,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.695,
+      "cumulative_reward": 13.304,
+      "state": {
+        "position": [
+          5.0,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 4.031,
+        "cleanliness": 0.88,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 26,
+        "steps_left": 124,
+        "steps_to_bell": 54,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          0.0,
+          0.7,
+          0.4,
+          0.05,
+          0.285,
+          0.4,
+          -0.65,
+          0.5397,
+          -0.35,
+          -0.05,
+          0.25,
+          0.0,
+          -0.75,
+          0.5303,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.88,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.8267,
+          0.675,
+          0.0
+        ],
+        "reward": 0.695
+      }
+    },
+    {
+      "t": 27,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.693,
+      "cumulative_reward": 13.997,
+      "state": {
+        "position": [
+          5.5,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 3.536,
+        "cleanliness": 0.868,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 27,
+        "steps_left": 123,
+        "steps_to_bell": 53,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          0.1,
+          0.7,
+          0.35,
+          0.05,
+          0.25,
+          0.35,
+          -0.65,
+          0.522,
+          -0.4,
+          -0.05,
+          0.285,
+          -0.05,
+          -0.75,
+          0.5315,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.868,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.82,
+          0.6625,
+          0.0
+        ],
+        "reward": 0.693
+      }
+    },
+    {
+      "t": 28,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.691,
+      "cumulative_reward": 14.688,
+      "state": {
+        "position": [
+          6.0,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 3.041,
+        "cleanliness": 0.856,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          3,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 28,
+        "steps_left": 122,
+        "steps_to_bell": 52,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          0.2,
+          0.7,
+          0.3,
+          0.05,
+          0.2151,
+          0.3,
+          -0.65,
+          0.5062,
+          -0.45,
+          -0.05,
+          0.3202,
+          -0.1,
+          -0.75,
+          0.535,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.856,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.8133,
+          0.65,
+          0.0
+        ],
+        "reward": 0.691
+      }
+    },
+    {
+      "t": 29,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.688,
+      "cumulative_reward": 15.376,
+      "state": {
+        "position": [
+          6.5,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 2.55,
+        "cleanliness": 0.844,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          2,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 29,
+        "steps_left": 121,
+        "steps_to_bell": 51,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          0.3,
+          0.7,
+          0.25,
+          0.05,
+          0.1803,
+          0.25,
+          -0.65,
+          0.4924,
+          -0.5,
+          -0.05,
+          0.3553,
+          -0.15,
+          -0.75,
+          0.5408,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.844,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.6667,
+          0.0,
+          0.8067,
+          0.6375,
+          0.0
+        ],
+        "reward": 0.688
+      }
+    },
+    {
+      "t": 30,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.682,
+      "cumulative_reward": 16.058,
+      "state": {
+        "position": [
+          7.0,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 2.062,
+        "cleanliness": 0.832,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          1,
+          2
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 30,
+        "steps_left": 120,
+        "steps_to_bell": 50,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          0.4,
+          0.7,
+          0.2,
+          0.05,
+          0.1458,
+          0.2,
+          -0.65,
+          0.4809,
+          -0.55,
+          -0.05,
+          0.3905,
+          -0.2,
+          -0.75,
+          0.5489,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.832,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.6667,
+          0.8,
+          0.625,
+          0.0
+        ],
+        "reward": 0.682
+      }
+    },
+    {
+      "t": 31,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.671,
+      "cumulative_reward": 16.729,
+      "state": {
+        "position": [
+          7.5,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 1.581,
+        "cleanliness": 0.82,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          1
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 31,
+        "steps_left": 119,
+        "steps_to_bell": 49,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          0.5,
+          0.7,
+          0.15,
+          0.05,
+          0.1118,
+          0.15,
+          -0.65,
+          0.4717,
+          -0.6,
+          -0.05,
+          0.4257,
+          -0.25,
+          -0.75,
+          0.559,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.82,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.3333,
+          0.7933,
+          0.6125,
+          0.0
+        ],
+        "reward": 0.671
+      }
+    },
+    {
+      "t": 32,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.645,
+      "cumulative_reward": 17.373,
+      "state": {
+        "position": [
+          8.0,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 1.118,
+        "cleanliness": 0.808,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": null,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 32,
+        "steps_left": 118,
+        "steps_to_bell": 48,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          0.6,
+          0.7,
+          0.1,
+          0.05,
+          0.0791,
+          0.1,
+          -0.65,
+          0.465,
+          -0.65,
+          -0.05,
+          0.461,
+          -0.3,
+          -0.75,
+          0.5712,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.808,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.7867,
+          0.6,
+          0.0
+        ],
+        "reward": 0.645
+      }
+    },
+    {
+      "t": 33,
+      "action_id": 3,
+      "action": "move_east",
+      "reward": 0.566,
+      "cumulative_reward": 17.94,
+      "state": {
+        "position": [
+          8.5,
+          8.5
+        ],
+        "objective": [
+          9.0,
+          9.0
+        ],
+        "distance_to_objective": 0.707,
+        "cleanliness": 0.796,
+        "attempts_per_scanner": [
+          0,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": 0,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 33,
+        "steps_left": 117,
+        "steps_to_bell": 47,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          0.7,
+          0.7,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          -0.65,
+          0.461,
+          -0.7,
+          -0.05,
+          0.4962,
+          -0.35,
+          -0.75,
+          0.5852,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.796,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.78,
+          0.5875,
+          0.0
+        ],
+        "reward": 0.566
+      }
+    },
+    {
+      "t": 34,
+      "action_id": 5,
+      "action": "scan_fingerprint",
+      "reward": -1.264,
+      "cumulative_reward": 16.676,
+      "state": {
+        "position": [
+          8.5,
+          8.5
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 7.018,
+        "cleanliness": 0.676,
+        "attempts_per_scanner": [
+          1,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": 0,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": false,
+        "checkin_mode": null,
+        "stranded": false,
+        "step": 34,
+        "steps_left": 116,
+        "steps_to_bell": 46,
+        "terminated": false,
+        "truncated": false,
+        "observation": [
+          0.7,
+          0.7,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          -0.65,
+          0.461,
+          -0.7,
+          -0.05,
+          0.4962,
+          -0.35,
+          -0.75,
+          0.5852,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.676,
+          0.3333,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.7733,
+          0.575,
+          0.0
+        ],
+        "reward": -1.264
+      }
+    },
+    {
+      "t": 35,
+      "action_id": 5,
+      "action": "scan_fingerprint",
+      "reward": 22.762,
+      "cumulative_reward": 39.439,
+      "state": {
+        "position": [
+          8.5,
+          8.5
+        ],
+        "objective": [
+          1.5,
+          8.0
+        ],
+        "distance_to_objective": 7.018,
+        "cleanliness": 0.676,
+        "attempts_per_scanner": [
+          1,
+          0
+        ],
+        "locked": [
+          false,
+          false
+        ],
+        "queue": [
+          0,
+          0
+        ],
+        "at_scanner_idx": 0,
+        "at_hygiene": false,
+        "at_office": false,
+        "manual_available": false,
+        "scanner_b_broken": null,
+        "help_eta": -1,
+        "tardy": false,
+        "checked_in": true,
+        "checkin_mode": "biometric",
+        "stranded": false,
+        "step": 35,
+        "steps_left": 115,
+        "steps_to_bell": 45,
+        "terminated": true,
+        "truncated": false,
+        "observation": [
+          0.7,
+          0.7,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          -0.65,
+          0.461,
+          -0.7,
+          -0.05,
+          0.4962,
+          -0.35,
+          -0.75,
+          0.5852,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.676,
+          0.3333,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.7667,
+          0.5625,
+          0.0
+        ],
+        "reward": 22.762
+      }
+    }
+  ]
+}

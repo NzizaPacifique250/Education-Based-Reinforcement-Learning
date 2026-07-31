@@ -3,7 +3,7 @@
 Usage:
     uv run play.py                      # auto-pick best agent across all sweeps
     uv run play.py --algo ppo --model ppo02
-    uv run play.py --episodes 3 --deterministic
+    uv run play.py --episodes 3 --sleep 0.6      # slower, for narrating a recording
 """
 
 from __future__ import annotations
@@ -113,6 +113,8 @@ if __name__ == "__main__":
     ap.add_argument("--model", default=None)
     ap.add_argument("--episodes", type=int, default=3)
     ap.add_argument("--stochastic", action="store_true", help="sample actions instead of argmax")
+    ap.add_argument("--sleep", type=float, default=0.25,
+                    help="pause between steps; raise it to narrate over a recording")
     args = ap.parse_args()
 
     if args.algo and args.model:
@@ -123,4 +125,5 @@ if __name__ == "__main__":
             raise SystemExit("No trained models found. Run training first (uv run main.py train).")
         algo, model, ret = found
         print(f"[auto] best agent = {algo}/{model} (eval return {ret:.2f})")
-    play(algo, model, episodes=args.episodes, deterministic=not args.stochastic)
+    play(algo, model, episodes=args.episodes, deterministic=not args.stochastic,
+         sleep=args.sleep)

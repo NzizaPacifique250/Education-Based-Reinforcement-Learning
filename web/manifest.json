@@ -1,0 +1,403 @@
+{
+  "schema_version": "1.0.0",
+  "env_id": "SchoolCheckIn-v0",
+  "mission": "Biometric school check-in: a pupil must register attendance at a fingerprint reader before the late bell.",
+  "observation_space": {
+    "type": "Box",
+    "shape": [
+      29
+    ],
+    "dtype": "float32",
+    "low": -1.0,
+    "high": 1.0,
+    "features": [
+      {
+        "index": [
+          0,
+          2
+        ],
+        "key": "position",
+        "size": 2,
+        "label": "Pupil position (x, y)",
+        "description": "Where the pupil is standing in the courtyard.",
+        "source": "Overhead fisheye camera with a person tracker, or a UWB tag in the student ID card",
+        "encoding": "float32, 2 values, scaled",
+        "range": "[-1, 1]"
+      },
+      {
+        "index": [
+          2,
+          5
+        ],
+        "key": "to_reader_a",
+        "size": 3,
+        "label": "Offset and range to reader A",
+        "description": "Vector and straight line distance to the main door reader.",
+        "source": "Same tracker, combined with the surveyed coordinates of the kiosk from the site plan",
+        "encoding": "float32, 3 values",
+        "range": "[-1, 1]"
+      },
+      {
+        "index": [
+          5,
+          8
+        ],
+        "key": "to_reader_b",
+        "size": 3,
+        "label": "Offset and range to reader B",
+        "description": "Vector and distance to the east side gate reader.",
+        "source": "As above",
+        "encoding": "float32, 3 values",
+        "range": "[-1, 1]"
+      },
+      {
+        "index": [
+          8,
+          11
+        ],
+        "key": "to_sanitizer",
+        "size": 3,
+        "label": "Offset and range to sanitizer",
+        "description": "Vector and distance to the hand sanitizer stand.",
+        "source": "As above",
+        "encoding": "float32, 3 values",
+        "range": "[-1, 1]"
+      },
+      {
+        "index": [
+          11,
+          14
+        ],
+        "key": "to_reception",
+        "size": 3,
+        "label": "Offset and range to reception",
+        "description": "Vector and distance to the reception booth.",
+        "source": "As above",
+        "encoding": "float32, 3 values",
+        "range": "[-1, 1]"
+      },
+      {
+        "index": [
+          14,
+          18
+        ],
+        "key": "at_station",
+        "size": 4,
+        "label": "At station flags (4)",
+        "description": "Whether the pupil is within 0.9 m of each of the four stations.",
+        "source": "Bluetooth Low Energy proximity beacon at each station, or a geofence over the tracker feed",
+        "encoding": "float32, 4 values, 0 or 1",
+        "range": "{0, 1}"
+      },
+      {
+        "index": [
+          18,
+          19
+        ],
+        "key": "cleanliness",
+        "size": 1,
+        "label": "Hand cleanliness",
+        "description": "Estimated cleanliness of the finger that will be presented.",
+        "source": "Dose counter on the sanitizer dispenser plus elapsed time, cross checked against the reader's own NFIQ image quality score",
+        "encoding": "float32",
+        "range": "[0, 1]"
+      },
+      {
+        "index": [
+          19,
+          21
+        ],
+        "key": "rejections",
+        "size": 2,
+        "label": "Rejections at A and B",
+        "description": "Failed scans recorded so far at each reader.",
+        "source": "Attendance and access control REST API, per device event log",
+        "encoding": "float32, 2 values, scaled by 3",
+        "range": "[0, 1]"
+      },
+      {
+        "index": [
+          21,
+          23
+        ],
+        "key": "lockout",
+        "size": 2,
+        "label": "Lockout flags A and B",
+        "description": "Whether a reader has locked this pupil out.",
+        "source": "Same access control API, device state field",
+        "encoding": "float32, 2 values, 0 or 1",
+        "range": "{0, 1}"
+      },
+      {
+        "index": [
+          23,
+          24
+        ],
+        "key": "reader_b_health",
+        "size": 1,
+        "label": "Reader B health belief",
+        "description": "Whether the side reader is out of service. Reads 0 until the pupil is close enough to see the display.",
+        "source": "Device heartbeat endpoint, legible on the kiosk screen within roughly 2.5 m",
+        "encoding": "float32",
+        "range": "{-1, 0, 1}"
+      },
+      {
+        "index": [
+          24,
+          26
+        ],
+        "key": "queue",
+        "size": 2,
+        "label": "Queue length at A and B",
+        "description": "How many people are waiting at each reader.",
+        "source": "Overhead camera people counter, or the queue display board feed",
+        "encoding": "float32, 2 values, scaled by 3",
+        "range": "[0, 1]"
+      },
+      {
+        "index": [
+          26,
+          27
+        ],
+        "key": "time_left",
+        "size": 1,
+        "label": "Time remaining",
+        "description": "Fraction of the episode budget still left.",
+        "source": "System clock",
+        "encoding": "float32",
+        "range": "[0, 1]"
+      },
+      {
+        "index": [
+          27,
+          28
+        ],
+        "key": "time_to_bell",
+        "size": 1,
+        "label": "Time to the bell",
+        "description": "Fraction of time left before the late bell. Goes negative once late.",
+        "source": "School timetable API plus system clock",
+        "encoding": "float32",
+        "range": "[-1, 1]"
+      },
+      {
+        "index": [
+          28,
+          29
+        ],
+        "key": "manual_available",
+        "size": 1,
+        "label": "Manual sign-in available",
+        "description": "Whether reception will accept a signature yet.",
+        "source": "Access control API, lockout status",
+        "encoding": "float32, 0 or 1",
+        "range": "{0, 1}"
+      }
+    ]
+  },
+  "action_space": {
+    "type": "Discrete",
+    "n": 9,
+    "actions": [
+      {
+        "id": 0,
+        "name": "move_north",
+        "description": "Walk one step (0.5 m) towards the building."
+      },
+      {
+        "id": 1,
+        "name": "move_south",
+        "description": "Walk one step away from the building."
+      },
+      {
+        "id": 2,
+        "name": "move_west",
+        "description": "Walk one step towards the gate side."
+      },
+      {
+        "id": 3,
+        "name": "move_east",
+        "description": "Walk one step towards the reader side."
+      },
+      {
+        "id": 4,
+        "name": "sanitize_hands",
+        "description": "Take a dose of sanitizer. Only works at the stand."
+      },
+      {
+        "id": 5,
+        "name": "scan_fingerprint",
+        "description": "Present a finger to a reader. Only works at a reader."
+      },
+      {
+        "id": 6,
+        "name": "wait_in_queue",
+        "description": "Stand still and let the queue ahead clear."
+      },
+      {
+        "id": 7,
+        "name": "request_assistance",
+        "description": "Call a staff member to recalibrate a reader. Takes 4 steps."
+      },
+      {
+        "id": 8,
+        "name": "check_in_manually",
+        "description": "Sign the register at reception. Only after a lockout."
+      }
+    ]
+  },
+  "rewards": {
+    "step_cost": -0.05,
+    "shaping_weight": 1.5,
+    "shaping": "potential based: DIST_W * (Phi(s') - Phi(s)), Phi = -(remaining route length), so closed loops sum to zero",
+    "blocked_by_obstacle": -0.25,
+    "station_misuse": -0.2,
+    "sanitize_when_clean": -0.15,
+    "scan_rejected": -0.5,
+    "scan_busy": -0.15,
+    "scan_locked_or_broken": -0.6,
+    "reader_locks_out": -2.0,
+    "wait_in_queue": -0.02,
+    "request_assistance": -0.3,
+    "biometric_check_in": 20.0,
+    "manual_check_in": 5.0,
+    "punctual_bonus_max": 5.0,
+    "tardy_penalty": -4.0,
+    "stranded_penalty": -8.0,
+    "never_checked_in": -6.0
+  },
+  "dynamics": {
+    "step_size_m": 0.5,
+    "clean_decay_per_step": 0.012,
+    "clean_lost_on_bump": 0.2,
+    "clean_gained_per_dose": 0.45,
+    "clean_lost_on_rejection": 0.12,
+    "clean_target_before_scanning": 0.7,
+    "max_attempts_per_reader": 3,
+    "assistance_delay_steps": 4,
+    "inspect_radius_m": 2.5,
+    "acceptance_probability": "clip((cleanliness - 0.45) / 0.45, 0.02, 0.97) * reader_reliability",
+    "reader_b_broken_probability": 0.25
+  },
+  "episode": {
+    "max_steps": 150,
+    "bell_step": 80,
+    "termination": [
+      "biometric check-in",
+      "manual sign-in at reception",
+      "stranded (every route exhausted)",
+      "timeout at max_steps"
+    ]
+  },
+  "layout": {
+    "room_size": 10.0,
+    "start": [
+      1.0,
+      1.0
+    ],
+    "scanners": [
+      [
+        9.0,
+        9.0
+      ],
+      [
+        9.0,
+        2.0
+      ]
+    ],
+    "scanner_labels": [
+      "Reader A (main door)",
+      "Reader B (east side gate)"
+    ],
+    "hygiene_station": [
+      1.5,
+      8.0
+    ],
+    "office": [
+      5.0,
+      1.0
+    ],
+    "station_radius": 0.9,
+    "obstacles": [
+      {
+        "center": [
+          5.0,
+          5.0
+        ],
+        "half": [
+          1.3,
+          1.3
+        ],
+        "label": "Hedge planter"
+      },
+      {
+        "center": [
+          3.2,
+          4.6
+        ],
+        "half": [
+          1.4,
+          0.5
+        ],
+        "label": "Queue barriers"
+      }
+    ],
+    "max_attempts_per_scanner": 3,
+    "bell_step": 80,
+    "max_steps": 150,
+    "actions": {
+      "0": "move_north",
+      "1": "move_south",
+      "2": "move_west",
+      "3": "move_east",
+      "4": "sanitize_hands",
+      "5": "scan_fingerprint",
+      "6": "wait_in_queue",
+      "7": "request_assistance",
+      "8": "check_in_manually"
+    }
+  },
+  "api": {
+    "base_url": "http://127.0.0.1:8000",
+    "endpoints": [
+      {
+        "method": "GET",
+        "path": "/manifest",
+        "returns": "this document"
+      },
+      {
+        "method": "GET",
+        "path": "/layout",
+        "returns": "scene geometry only"
+      },
+      {
+        "method": "POST",
+        "path": "/session",
+        "returns": "session_id + initial state"
+      },
+      {
+        "method": "GET",
+        "path": "/session/{id}",
+        "returns": "current state"
+      },
+      {
+        "method": "POST",
+        "path": "/session/{id}/step",
+        "body": {
+          "action": "int 0..8"
+        },
+        "returns": "state after the action"
+      },
+      {
+        "method": "POST",
+        "path": "/session/{id}/act",
+        "returns": "state after the trained agent picks one action"
+      },
+      {
+        "method": "DELETE",
+        "path": "/session/{id}",
+        "returns": "ends the session"
+      }
+    ]
+  }
+}

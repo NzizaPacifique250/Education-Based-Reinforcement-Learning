@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SchoolCheckIn-RL | JSON client</title>
+<style>
+  :root {
+    --navy: #12305c; --blue: #1c4a86; --line: #ccd3dd; --ink: #1a1a1a; --mute: #5b6472;
+    --bg: #f4f6fa; --card: #ffffff; --good: #1f7a3d; --warn: #d9a520; --bad: #b00020;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.45 "Segoe UI", Calibri, Arial, sans-serif; }
+  header { background: var(--navy); color: #fff; padding: 14px 18px; }
+  header h1 { margin: 0; font-size: 18px; }
+  header p { margin: 3px 0 0; font-size: 13px; opacity: .85; }
+  header code { background: rgba(255, 255, 255, .16); color: #fff; }
+  main { max-width: 1120px; margin: 0 auto; padding: 16px;
+         display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+          padding: 14px; }
+  .card h2 { margin: 0 0 10px; font-size: 14px; text-transform: uppercase;
+             letter-spacing: .06em; color: var(--blue); }
+  canvas { width: 100%; height: auto; border-radius: 6px; background: #eaf0e6; display: block; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .row + .row { margin-top: 8px; }
+  button { font: inherit; padding: 9px 12px; min-height: 42px; border-radius: 6px;
+           border: 1px solid var(--blue); background: var(--blue); color: #fff;
+           cursor: pointer; }
+  button.ghost { background: #fff; color: var(--blue); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  input[type=text] { font: inherit; padding: 9px; min-height: 42px; flex: 1 1 200px;
+                     border: 1px solid var(--line); border-radius: 6px; }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px;
+          font-weight: 600; background: #e6ecf6; color: var(--navy); }
+  .pill.live { background: #ddf0dd; color: var(--good); }
+  .pill.bad { background: #fde8ea; color: var(--bad); }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; }
+  .stat { font-size: 13px; color: var(--mute); }
+  .stat b { display: block; font-size: 17px; color: var(--ink); font-weight: 600; }
+  .bar { height: 9px; border-radius: 999px; background: #e6e9ef; overflow: hidden;
+         margin-top: 5px; }
+  .bar i { display: block; height: 100%; background: var(--good); }
+  .actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .actions button { font-size: 12.5px; padding: 8px 4px; }
+  #log { margin: 0; padding: 0; list-style: none; max-height: 190px; overflow-y: auto;
+         font-family: Consolas, monospace; font-size: 12.5px; }
+  #log li { padding: 3px 0; border-bottom: 1px solid #eef1f5; display: flex; gap: 8px; }
+  #log b { color: var(--navy); flex: 0 0 26px; }
+  #log span { margin-left: auto; }
+  .pos { color: var(--good); } .neg { color: var(--bad); }
+  footer { max-width: 1120px; margin: 0 auto; padding: 0 16px 24px; font-size: 13px;
+           color: var(--mute); }
+  code { background: #eef1f6; padding: 1px 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SchoolCheckIn-RL &mdash; JSON client</h1>
+  <p>The same environment the agents were trained on, driven entirely over JSON. Replays
+     <code>episode.json</code> offline, or talks to the FastAPI service live.</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Courtyard <span id="mode" class="pill">replay</span></h2>
+    <canvas id="scene" width="620" height="620"></canvas>
+    <div class="row" style="margin-top:10px">
+      <button id="play">Play</button>
+      <button id="stepBtn" class="ghost">Step</button>
+      <button id="reset" class="ghost">New episode</button>
+      <span id="who" class="stat" style="margin-left:auto"></span>
+    </div>
+    <div class="row">
+      <input id="base" type="text" value="http://127.0.0.1:8000" aria-label="API base URL">
+      <button id="connect" class="ghost">Connect to API</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>State</h2>
+    <div class="grid">
+      <div class="stat">Step<b><span id="s-step">0</span> / <span id="s-max">150</span></b></div>
+      <div class="stat">Return<b id="s-return">0.00</b></div>
+      <div class="stat">Last action<b id="s-action">&ndash;</b></div>
+      <div class="stat">Step reward<b id="s-reward">0.00</b></div>
+      <div class="stat" style="grid-column:1/-1">Hand cleanliness <b id="s-clean">0.00</b>
+        <div class="bar"><i id="s-cleanbar" style="width:0%"></i></div></div>
+      <div class="stat">Reader A<b id="s-a">idle</b></div>
+      <div class="stat">Reader B<b id="s-b">idle</b></div>
+      <div class="stat">Bell in<b id="s-bell">80</b></div>
+      <div class="stat">Outcome<b id="s-outcome">in progress</b></div>
+    </div>
+
+    <h2 style="margin-top:16px">Send an action</h2>
+    <div class="actions" id="actions"></div>
+    <p class="stat" id="hint" style="margin:8px 0 0"></p>
+
+    <h2 style="margin-top:16px">Trace</h2>
+    <ul id="log"></ul>
+  </section>
+</main>
+
+<footer>
+  Contract: <code>GET /manifest</code> &middot; session: <code>POST /session</code> &middot;
+  agent step: <code>POST /session/{id}/act</code> &middot; manual step:
+  <code>POST /session/{id}/step</code>. Every payload on this page is the JSON those
+  endpoints return.
+</footer>
+
+<script>
+const S = {
+  manifest: null, layout: null, mode: "replay", base: "http://127.0.0.1:8000",
+  frames: [], i: 0, sid: null, trail: [], timer: null, over: false, agent: null,
+};
+const $ = id => document.getElementById(id);
+const cv = $("scene"), ctx = cv.getContext("2d");
+
+// --- geometry ---------------------------------------------------------------------------
+const toPx = (p, size) => {          // world (0..room) -> canvas px, y flipped so north is up
+  const m = 26, s = (size - 2 * m) / S.layout.room_size;
+  return [m + p[0] * s, size - m - p[1] * s];
+};
+const scale = size => (size - 52) / S.layout.room_size;
+
+function drawScene(st) {
+  const L = S.layout, size = cv.width, s = scale(size);
+  ctx.clearRect(0, 0, size, size);
+  ctx.fillStyle = "#eaf0e6"; ctx.fillRect(0, 0, size, size);
+
+  // paving
+  const [ox, oy] = toPx([0, L.room_size], size);
+  ctx.fillStyle = "#f7f8f5"; ctx.fillRect(ox, oy, L.room_size * s, L.room_size * s);
+  ctx.strokeStyle = "#c9d2c4"; ctx.lineWidth = 1;
+  for (let g = 1; g < L.room_size; g++) {
+    const [gx, gy] = toPx([g, g], size);
+    ctx.beginPath(); ctx.moveTo(gx, oy); ctx.lineTo(gx, oy + L.room_size * s);
+    ctx.moveTo(ox, gy); ctx.lineTo(ox + L.room_size * s, gy); ctx.stroke();
+  }
+
+  // obstacles: every block first, then the labels, so one never lands under the other
+  ctx.fillStyle = "#8aa47c";
+  L.obstacles.forEach(o => {
+    const [x, y] = toPx([o.center[0] - o.half[0], o.center[1] + o.half[1]], size);
+    ctx.fillRect(x, y, 2 * o.half[0] * s, 2 * o.half[1] * s);
+  });
+  ctx.fillStyle = "#31402a"; ctx.font = "600 11px sans-serif"; ctx.textAlign = "center";
+  L.obstacles.forEach(o => {
+    const [x, y] = toPx(o.center, size);
+    ctx.fillText(o.label, x, y + 4);
+  });
+
+  // stations
+  const station = (p, label, colour, sub) => {
+    const [x, y] = toPx(p, size);
+    ctx.beginPath(); ctx.arc(x, y, L.station_radius * s, 0, 7);
+    ctx.fillStyle = colour + "22"; ctx.fill();
+    ctx.strokeStyle = colour; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = colour; ctx.beginPath(); ctx.arc(x, y, 7, 0, 7); ctx.fill();
+    ctx.fillStyle = "#26313f"; ctx.font = "600 12px sans-serif"; ctx.textAlign = "center";
+    ctx.fillText(label, x, y - L.station_radius * s - 8);
+    if (sub) { ctx.font = "11px sans-serif"; ctx.fillStyle = "#5b6472";
+               ctx.fillText(sub, x, y + L.station_radius * s + 15); }
+  };
+  const broken = st && st.scanner_b_broken === true;
+  const qa = st ? st.queue[0] : 0, qb = st ? st.queue[1] : 0;
+  const lockA = st && st.locked[0], lockB = st && st.locked[1];
+  station(L.scanners[0], "Reader A", lockA ? "#b00020" : "#1f7a3d",
+          st ? (lockA ? "locked out" : qa > 0 ? "queue " + qa : "free") : "");
+  station(L.scanners[1], "Reader B", (lockB || broken) ? "#b00020" : "#1f7a3d",
+          st ? (broken ? "out of service" : lockB ? "locked out" : qb > 0 ? "queue " + qb : "free") : "");
+  station(L.hygiene_station, "Sanitizer", "#1c4a86", "");
+  station(L.office, "Reception", "#8a5a00",
+          st && st.manual_available ? "will sign you in" : "needs a lockout first");
+  const [sx, sy] = toPx(L.start, size);
+  ctx.fillStyle = "#5b6472"; ctx.font = "11px sans-serif"; ctx.textAlign = "center";
+  ctx.fillText("gate", sx, sy + 20);
+
+  // walked route
+  if (S.trail.length > 1) {
+    ctx.strokeStyle = "#1c4a8688"; ctx.lineWidth = 3; ctx.beginPath();
+    S.trail.forEach((p, k) => { const [x, y] = toPx(p, size);
+      k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.stroke();
+  }
+
+  if (!st) return;
+  // objective marker
+  const [tx, ty] = toPx(st.objective, size);
+  ctx.strokeStyle = "#d9a520"; ctx.lineWidth = 2; ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.arc(tx, ty, 13, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+
+  // the pupil, tinted by hand cleanliness (green clean, red dirty) as in the 3D renderer
+  const [px, py] = toPx(st.position, size);
+  const c = st.cleanliness;
+  ctx.beginPath(); ctx.arc(px, py, 11, 0, 7);
+  ctx.fillStyle = `rgb(${Math.round(200 - 130 * c)}, ${Math.round(70 + 120 * c)}, 60)`;
+  ctx.fill(); ctx.strokeStyle = "#12305c"; ctx.lineWidth = 2.5; ctx.stroke();
+}
+
+// --- HUD --------------------------------------------------------------------------------
+function render(frame) {
+  const st = frame.state;
+  $("s-step").textContent = st.step;
+  $("s-max").textContent = S.layout.max_steps;
+  $("s-return").textContent = (frame.cumulative_reward ?? 0).toFixed(2);
+  $("s-action").textContent = frame.action || "-";
+  const r = frame.reward ?? 0;
+  $("s-reward").innerHTML = `<span class="${r >= 0 ? "pos" : "neg"}">${r >= 0 ? "+" : ""}${r.toFixed(2)}</span>`;
+  $("s-clean").textContent = st.cleanliness.toFixed(2);
+  $("s-cleanbar").style.width = Math.round(st.cleanliness * 100) + "%";
+  $("s-cleanbar").style.background = st.cleanliness >= 0.7 ? "var(--good)"
+                                    : st.cleanliness >= 0.45 ? "var(--warn)" : "var(--bad)";
+  $("s-a").textContent = `${st.attempts_per_scanner[0]} rejected` +
+    (st.locked[0] ? ", locked" : st.queue[0] ? `, queue ${st.queue[0]}` : "");
+  $("s-b").textContent = st.scanner_b_broken === null ? "not inspected yet"
+    : st.scanner_b_broken ? "out of service"
+    : `${st.attempts_per_scanner[1]} rejected` + (st.locked[1] ? ", locked" : "");
+  $("s-bell").textContent = st.steps_to_bell >= 0 ? st.steps_to_bell + " steps" : "rung";
+  $("s-outcome").textContent = st.checked_in
+    ? `${st.checkin_mode} check-in${st.tardy ? " (late)" : " (on time)"}`
+    : st.stranded ? "stranded" : st.truncated ? "never checked in" : "in progress";
+  S.over = st.terminated || st.truncated;
+
+  const last = S.trail[S.trail.length - 1];
+  if (!last || last[0] !== st.position[0] || last[1] !== st.position[1])
+    S.trail.push(st.position);
+  drawScene(st);
+
+  if (frame.action) {
+    const li = document.createElement("li");
+    li.innerHTML = `<b>${st.step}</b> ${frame.action}` +
+      `<span class="${r >= 0 ? "pos" : "neg"}">${r >= 0 ? "+" : ""}${r.toFixed(2)}</span>`;
+    $("log").prepend(li);
+  }
+  $("stepBtn").disabled = S.over;
+  $("play").disabled = S.over;
+  document.querySelectorAll("#actions button").forEach(b => {
+    b.disabled = S.over || S.mode !== "live";
+  });
+}
+
+function setStatus(text, cls) {
+  $("mode").textContent = text;
+  $("mode").className = "pill" + (cls ? " " + cls : "");
+}
+function hint(msg) { $("hint").textContent = msg || ""; }
+
+// --- replay -----------------------------------------------------------------------------
+async function loadReplay() {
+  const ep = await (await fetch("episode.json")).json();
+  S.frames = ep.frames;
+  S.agent = ep.policy.kind === "trained"
+    ? `${ep.policy.algo}/${ep.policy.model} (recorded)`
+    : "scripted reference controller (no trained model in this checkout)";
+  $("who").textContent = S.agent;
+  restart();
+}
+function restart() {
+  stopTimer();
+  S.i = 0; S.trail = []; $("log").innerHTML = "";
+  render(S.frames[0]);
+}
+function stepReplay() {
+  if (S.i >= S.frames.length - 1) { stopTimer(); return; }
+  render(S.frames[++S.i]);
+  if (S.i >= S.frames.length - 1) stopTimer();
+}
+
+// --- live API ---------------------------------------------------------------------------
+async function call(path, opts) {
+  const res = await fetch(S.base + path, opts);
+  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail || res.statusText);
+  return res.json();
+}
+async function connect() {
+  S.base = $("base").value.replace(/\/$/, "");
+  try {
+    const health = await call("/health");
+    S.layout = (await call("/manifest")).layout;
+    S.mode = "live";
+    setStatus("live API", "live");
+    S.agent = health.agent_loaded || "trained agent loaded on first /act";
+    $("who").textContent = S.agent;
+    await newLive();
+    hint("Connected. 'Step' asks the agent for one action; the buttons send your own.");
+  } catch (e) {
+    setStatus("API unreachable", "bad");
+    hint("Could not reach " + S.base + " (" + e.message + "). Start it with: uv run uvicorn api.serve:app");
+  }
+}
+async function newLive() {
+  const res = await call("/session", {method: "POST", headers: {"Content-Type": "application/json"},
+                                      body: JSON.stringify({})});
+  S.sid = res.session_id; S.trail = []; $("log").innerHTML = "";
+  render({action: null, reward: 0, cumulative_reward: 0, state: res.state});
+  S.total = 0;
+}
+async function liveStep(action) {
+  try {
+    const res = action === undefined
+      ? await call(`/session/${S.sid}/act`, {method: "POST"})
+      : await call(`/session/${S.sid}/step`, {
+          method: "POST", headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({action})});
+    S.total = (S.total || 0) + res.state.reward;
+    if (res.agent) { S.agent = res.agent; $("who").textContent = res.agent; }
+    render({action: res.action, reward: res.state.reward, cumulative_reward: S.total,
+            state: res.state});
+  } catch (e) { stopTimer(); hint(e.message); }
+}
+
+// --- controls ---------------------------------------------------------------------------
+function stopTimer() { clearInterval(S.timer); S.timer = null; $("play").textContent = "Play"; }
+function toggleTimer() {
+  if (S.timer) return stopTimer();
+  $("play").textContent = "Pause";
+  S.timer = setInterval(() => S.mode === "live" ? liveStep() : stepReplay(), 220);
+}
+$("play").onclick = toggleTimer;
+$("stepBtn").onclick = () => S.mode === "live" ? liveStep() : stepReplay();
+$("reset").onclick = () => { stopTimer(); S.mode === "live" ? newLive() : restart(); };
+$("connect").onclick = connect;
+
+// --- boot -------------------------------------------------------------------------------
+(async function boot() {
+  S.manifest = await (await fetch("manifest.json")).json();
+  S.layout = S.manifest.layout;
+  S.manifest.action_space.actions.forEach(a => {
+    const b = document.createElement("button");
+    b.className = "ghost"; b.textContent = a.name.replace(/_/g, " ");
+    b.title = a.description; b.disabled = true;
+    b.onclick = () => liveStep(a.id);
+    $("actions").appendChild(b);
+  });
+  hint("Replaying the recorded episode. Connect to the API to drive the trained agent live.");
+  await loadReplay();
+})();
+</script>
+</body>
+</html>

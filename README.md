@@ -60,11 +60,35 @@ Unattended full pipeline (four sweeps in parallel, then figures):
 bash scripts/run_pipeline.sh
 ```
 
-### JSON API (frontend integration)
+### JSON API and web client (frontend integration)
 ```bash
-uv run uvicorn api.serve:app --reload
-# POST /session, POST /session/{id}/step, POST /session/{id}/act, GET /layout
+uv run main.py export                # write web/manifest.json + web/episode.json
+uv run main.py serve                 # API + demo client on http://127.0.0.1:8000/app/
 ```
+
+The environment is fully serialized to JSON, so a web or mobile product can consume it
+without importing any Python:
+
+| Endpoint | Returns |
+|---|---|
+| `GET /manifest` | the whole contract: 29-feature observation layout with index ranges, the nine actions, every reward constant, the dynamics and the scene geometry |
+| `GET /layout` | scene geometry only, for rendering |
+| `POST /session` | a session id and the initial state (optional `seed`, `cleanliness`, `scan_reliability`, `scanner_b_broken`, `rush`) |
+| `POST /session/{id}/step` | applies a client-chosen action, returns the next state |
+| `POST /session/{id}/act` | the **best trained agent** picks and applies one action |
+| `GET /session/{id}`, `DELETE /session/{id}` | read / end a session |
+| `GET /docs`, `GET /openapi.json` | interactive and machine-readable OpenAPI, so a mobile client can generate typed models |
+
+Every state payload carries the raw 29-d observation alongside the human-readable fields,
+so a client can run its own model on exactly the vector the agents were trained on. CORS is
+open, so a Vite, Expo or React Native client on another origin can call the service
+directly.
+
+[`web/index.html`](web/index.html) is a dependency-free client (canvas, plain fetch) served
+at `/app/`. It replays `web/episode.json` offline and switches to the live API on
+**Connect**, driving the trained agent through `POST /session/{id}/act`.
+
+![The JSON client](assets/frontend_client.png)
 
 ## Environment summary
 - **Observation** (`Box`, 29-d, in [-1, 1]): position; vector + distance to each of scanner A,
@@ -115,7 +139,8 @@ queued, grey out of order, green admitted.
 ├── play.py                  # GUI playback of the best agent, verbose terminal output
 ├── environment/             # custom_env.py (Gym env) + rendering.py (PyBullet 3D)
 ├── training/                # dqn_training.py, pg_training.py, plots.py, common.py
-├── api/serve.py             # FastAPI JSON service
+├── api/                     # schema.py (JSON contract), serve.py (FastAPI), export.py
+├── web/                     # dependency-free client + exported manifest.json / episode.json
 ├── scripts/run_pipeline.sh  # unattended parallel training + figures
 ├── models/{dqn,pg}/         # saved models
 ├── logs/                    # per-run monitor/progress CSVs + TensorBoard

@@ -7,6 +7,8 @@ Examples:
     uv run main.py evaluate                    # print eval metrics for saved models
     uv run main.py plots                       # regenerate report figures into assets/
     uv run main.py demo                        # random-policy GUI demo (no training needed)
+    uv run main.py export                      # serialize env + one episode to web/*.json
+    uv run main.py serve                       # JSON API + web client on 127.0.0.1:8000
 """
 
 from __future__ import annotations
@@ -34,14 +36,14 @@ def cmd_train(args):
 def cmd_play(args):
     from play import play, _best_from_sweeps
     if args.algo and args.model:
-        play(args.algo, args.model, episodes=args.episodes)
+        play(args.algo, args.model, episodes=args.episodes, sleep=args.sleep)
     else:
         found = _best_from_sweeps()
         if found is None:
             raise SystemExit("No trained models found. Run: uv run main.py train")
         algo, model, ret = found
         print(f"[auto] best agent = {algo}/{model} (return {ret:.2f})")
-        play(algo, model, episodes=args.episodes)
+        play(algo, model, episodes=args.episodes, sleep=args.sleep)
 
 
 def cmd_demo(args):
@@ -82,6 +84,17 @@ def cmd_plots(args):
     generate_all()
 
 
+def cmd_export(args):
+    """Serialize the environment contract and one episode to JSON for the web client."""
+    from api.export import export, WEB_DIR
+    export(args.out or WEB_DIR, seed=args.seed, policy=args.policy)
+
+
+def cmd_serve(args):
+    import uvicorn
+    uvicorn.run("api.serve:app", host=args.host, port=args.port, reload=args.reload)
+
+
 def main():
     ap = argparse.ArgumentParser(description="SchoolCheckIn-RL: RL summative (education mission).")
     sub = ap.add_subparsers(dest="command", required=True)
@@ -95,6 +108,8 @@ def main():
     p.add_argument("--algo", choices=["dqn", "ppo", "a2c", "reinforce"], default=None)
     p.add_argument("--model", default=None)
     p.add_argument("--episodes", type=int, default=3)
+    p.add_argument("--sleep", type=float, default=0.25,
+                   help="pause between steps; raise it to narrate over a recording")
     p.set_defaults(func=cmd_play)
 
     p = sub.add_parser("demo", help="random-policy GUI demo (no training required)")
@@ -105,6 +120,18 @@ def main():
 
     p = sub.add_parser("plots", help="regenerate report figures into assets/")
     p.set_defaults(func=cmd_plots)
+
+    p = sub.add_parser("export", help="write web/manifest.json and web/episode.json")
+    p.add_argument("--out", default=None, help="output directory (default: web/)")
+    p.add_argument("--seed", type=int, default=5000)
+    p.add_argument("--policy", choices=["auto", "scripted"], default="auto")
+    p.set_defaults(func=cmd_export)
+
+    p = sub.add_parser("serve", help="run the JSON API and the demo frontend")
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--port", type=int, default=8000)
+    p.add_argument("--reload", action="store_true")
+    p.set_defaults(func=cmd_serve)
 
     args = ap.parse_args()
     args.func(args)
